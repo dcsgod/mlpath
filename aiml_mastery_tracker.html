@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI/ML Mastery Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #17171f;
+  --surface3: #1e1e28;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #7c6dfa;
+  --accent2: #a78bfa;
+  --teal: #2dd4bf;
+  --coral: #fb7185;
+  --amber: #fbbf24;
+  --green: #4ade80;
+  --text: #f0f0f8;
+  --muted: #6b6b85;
+  --muted2: #9898b0;
+  --radius: 10px;
+  --font: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Subtle grid bg */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: 
+    linear-gradient(rgba(124,109,250,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,109,250,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layout ── */
+.shell { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── Header ── */
+header {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.logo-row { display: flex; align-items: center; gap: 12px; }
+.logo-box {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -1px;
+}
+header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+header p { font-size: 13px; color: var(--muted2); font-family: var(--mono); margin-top: 2px; }
+.header-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+.hstat {
+  text-align: right;
+}
+.hstat-num { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+.hstat-label { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+
+/* ── Overall progress bar ── */
+.overall-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.overall-bar-label { font-size: 12px; font-family: var(--mono); color: var(--muted2); white-space: nowrap; }
+.bar-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+.bar-pct { font-size: 13px; font-weight: 700; font-family: var(--mono); color: var(--accent2); min-width: 36px; text-align: right; }
+
+/* ── Nav tabs ── */
+.nav-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.nav-tab {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted2);
+  transition: all .18s;
+  white-space: nowrap;
+}
+.nav-tab:hover { border-color: var(--border2); color: var(--text); }
+.nav-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+
+/* ── Section ── */
+.section { display: none; }
+.section.visible { display: block; }
+.section-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+}
+.section-title {
+  font-size: 16px; font-weight: 700; letter-spacing: -.3px;
+}
+.section-meta { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+.section-progress-text { font-size: 12px; font-family: var(--mono); color: var(--accent2); }
+
+/* ── Week block ── */
+.week-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.week-header {
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: background .15s;
+}
+.week-header:hover { background: var(--surface2); }
+.week-header.open { border-bottom-color: var(--border); }
+.week-dot {
+  width: 24px; height: 24px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; font-family: var(--mono);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.week-title { font-size: 13px; font-weight: 600; flex: 1; }
+.week-bar-mini { width: 80px; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.week-bar-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+.week-pct { font-size: 11px; font-family: var(--mono); color: var(--muted); min-width: 30px; text-align: right; }
+.week-chevron { font-size: 10px; color: var(--muted); transition: transform .2s; }
+.week-chevron.open { transform: rotate(180deg); }
+.week-body { padding: 8px 16px 14px; display: none; }
+.week-body.open { display: block; }
+
+/* ── Topic items ── */
+.topic-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background .1s;
+  border-radius: 4px;
+  padding-left: 4px; padding-right: 4px;
+}
+.topic-item:last-child { border-bottom: none; }
+.topic-item:hover { background: rgba(124,109,250,0.06); }
+.topic-checkbox {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 1.5px solid var(--muted);
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.topic-item.done .topic-checkbox {
+  background: var(--green);
+  border-color: var(--green);
+}
+.topic-item.done .topic-checkbox::after {
+  content: '✓';
+  font-size: 11px; font-weight: 700; color: #0a0a0f;
+}
+.topic-item.done .topic-name { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.2); }
+.topic-name { font-size: 13px; flex: 1; line-height: 1.5; }
+.tag-pill {
+  font-size: 9px; padding: 2px 7px; border-radius: 6px;
+  font-family: var(--mono); font-weight: 500;
+  flex-shrink: 0; margin-top: 2px;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.tag-hot { background: rgba(251,191,36,.15); color: var(--amber); }
+.tag-miss { background: rgba(251,113,133,.12); color: var(--coral); }
+.tag-new { background: rgba(45,212,191,.1); color: var(--teal); }
+.tag-paper { background: rgba(124,109,250,.15); color: var(--accent2); }
+
+/* ── Papers section ── */
+.papers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+.paper-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  transition: border-color .2s;
+  cursor: pointer;
+}
+.paper-card:hover { border-color: var(--border2); }
+.paper-card.read { border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.04); }
+.paper-top { display: flex; align-items: flex-start; gap: 10px; }
+.paper-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.paper-card.read .paper-check { background: var(--green); border-color: var(--green); }
+.paper-card.read .paper-check::after { content: '✓'; font-size: 11px; font-weight: 700; color: #0a0a0f; }
+.paper-card.read .paper-title { color: var(--muted2); }
+.paper-content { flex: 1; }
+.paper-title { font-size: 13px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+.paper-meta { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-bottom: 6px; }
+.paper-desc { font-size: 12px; color: var(--muted2); line-height: 1.5; }
+.paper-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+.paper-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  background: var(--surface3); color: var(--muted2);
+  font-family: var(--mono);
+}
+.add-paper-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px dashed rgba(124,109,250,0.4);
+  border-radius: var(--radius);
+  color: var(--accent2);
+  font-family: var(--font);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .18s;
+  width: 100%;
+  margin-top: 12px;
+  justify-content: center;
+}
+.add-paper-btn:hover { background: rgba(124,109,250,0.08); border-color: var(--accent); }
+
+/* ── Notes section ── */
+.notes-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.notes-area label { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; display: block; margin-bottom: 8px; }
+.notes-area textarea {
+  width: 100%; background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text);
+  font-family: var(--mono); font-size: 13px;
+  padding: 10px 12px; resize: vertical; min-height: 80px;
+  outline: none; transition: border-color .15s;
+  line-height: 1.6;
+}
+.notes-area textarea:focus { border-color: var(--accent); }
+
+/* ── Modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%; max-width: 480px;
+  margin: 20px;
+}
+.modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; display: block; margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text);
+  font-family: var(--font); font-size: 13px;
+  padding: 9px 12px; outline: none;
+  transition: border-color .15s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+.form-group select option { background: var(--surface3); }
+.form-group textarea { resize: vertical; min-height: 70px; }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.btn-cancel {
+  padding: 8px 18px; border-radius: 6px;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--muted2); font-family: var(--font); font-size: 13px; cursor: pointer;
+}
+.btn-save {
+  padding: 8px 18px; border-radius: 6px;
+  background: var(--accent); border: 1px solid var(--accent);
+  color: #fff; font-family: var(--font); font-size: 13px; cursor: pointer; font-weight: 500;
+}
+
+/* ── Streak / stats cards ── */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.stat-card-num { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+.stat-card-label { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-top: 2px; }
+
+/* ── Search ── */
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 20px;
+}
+.search-bar input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--font); font-size: 13px; color: var(--text);
+}
+.search-bar input::placeholder { color: var(--muted); }
+.search-icon { color: var(--muted); font-size: 14px; }
+
+/* ── Utility ── */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  font-family: var(--mono); font-weight: 500;
+}
+.badge-purple { background: rgba(124,109,250,.2); color: var(--accent2); }
+.badge-teal { background: rgba(45,212,191,.15); color: var(--teal); }
+.badge-green { background: rgba(74,222,128,.15); color: var(--green); }
+.badge-amber { background: rgba(251,191,36,.15); color: var(--amber); }
+.reset-btn {
+  font-size: 11px; font-family: var(--mono); color: var(--muted);
+  background: none; border: 1px solid var(--border); border-radius: 5px;
+  padding: 4px 10px; cursor: pointer; transition: all .15s;
+}
+.reset-btn:hover { color: var(--coral); border-color: var(--coral); }
+.export-btn {
+  font-size: 11px; font-family: var(--mono); color: var(--muted2);
+  background: none; border: 1px solid var(--border2); border-radius: 5px;
+  padding: 5px 12px; cursor: pointer; transition: all .15s;
+}
+.export-btn:hover { color: var(--teal); border-color: var(--teal); }
+.lc-tracker {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.lc-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.lc-num { font-size: 22px; font-weight: 800; letter-spacing: -1px; font-family: var(--mono); }
+.lc-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; }
+.lc-input {
+  background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); font-family: var(--mono);
+  font-size: 14px; font-weight: 700; padding: 5px 10px;
+  width: 70px; text-align: center; outline: none;
+}
+.lc-input:focus { border-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- Header -->
+<header>
+  <div>
+    <div class="logo-row">
+      <div class="logo-box">AI</div>
+      <div>
+        <h1>ML Mastery Tracker</h1>
+        <p>9-month · 50 LPA+ target · track every topic</p>
+      </div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <div class="hstat-num" id="total-done" style="color:var(--green)">0</div>
+      <div class="hstat-label">completed</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" id="total-topics" style="color:var(--accent2)">0</div>
+      <div class="hstat-label">total topics</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" id="papers-read" style="color:var(--teal)">0</div>
+      <div class="hstat-label">papers read</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="export-btn" onclick="exportData()">export</button>
+      <button class="reset-btn" onclick="resetAll()">reset</button>
+    </div>
+  </div>
+</header>
+
+<!-- Overall Progress -->
+<div class="overall-bar">
+  <span class="overall-bar-label">overall progress</span>
+  <div class="bar-track"><div class="bar-fill" id="overall-fill" style="width:0%"></div></div>
+  <span class="bar-pct" id="overall-pct">0%</span>
+</div>
+
+<!-- Nav Tabs -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('dashboard',this)">Dashboard</button>
+  <button class="nav-tab" onclick="showSection('m1',this)">M1: DSA Core</button>
+  <button class="nav-tab" onclick="showSection('m2',this)">M2: Adv DSA</button>
+  <button class="nav-tab" onclick="showSection('m3',this)">M3: Math+Algos</button>
+  <button class="nav-tab" onclick="showSection('m4',this)">M4: ML/DL Deep</button>
+  <button class="nav-tab" onclick="showSection('m5',this)">M5: CV+NLP</button>
+  <button class="nav-tab" onclick="showSection('m6',this)">M6: Transformers</button>
+  <button class="nav-tab" onclick="showSection('m7',this)">M7: GenAI Stack</button>
+  <button class="nav-tab" onclick="showSection('m8',this)">M8: Systems+MLOps</button>
+  <button class="nav-tab" onclick="showSection('m9',this)">M9: Portfolio</button>
+  <button class="nav-tab" onclick="showSection('papers',this)">📄 Papers</button>
+  <button class="nav-tab" onclick="showSection('notes',this)">📝 Notes</button>
+</div>
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<div id="sec-dashboard" class="section visible">
+  <div class="stats-row" id="dashboard-cards"></div>
+  <div class="lc-tracker">
+    <div class="lc-item">
+      <div class="lc-label">LeetCode solved</div>
+      <input class="lc-input" id="lc-count" type="number" min="0" max="999" value="0" onchange="saveLc()">
+    </div>
+    <div class="lc-item">
+      <div class="lc-label">target</div>
+      <div class="lc-num" style="color:var(--muted)">200</div>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:5px">LC Progress</div>
+      <div class="bar-track" style="height:8px"><div class="bar-fill" id="lc-bar" style="width:0%;background:linear-gradient(90deg,var(--amber),var(--coral))"></div></div>
+    </div>
+    <div class="lc-item">
+      <div class="lc-num" id="lc-pct" style="color:var(--amber)">0%</div>
+      <div class="lc-label">of 200</div>
+    </div>
+  </div>
+  <div id="month-bars"></div>
+</div>
+
+<!-- Sections will be injected by JS -->
+<div id="sec-m1" class="section"></div>
+<div id="sec-m2" class="section"></div>
+<div id="sec-m3" class="section"></div>
+<div id="sec-m4" class="section"></div>
+<div id="sec-m5" class="section"></div>
+<div id="sec-m6" class="section"></div>
+<div id="sec-m7" class="section"></div>
+<div id="sec-m8" class="section"></div>
+<div id="sec-m9" class="section"></div>
+
+<!-- ═══════════ PAPERS ═══════════ -->
+<div id="sec-papers" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Research Papers</div>
+      <div class="section-meta">Must-read papers for every AI/ML engineer</div>
+    </div>
+    <span class="section-progress-text" id="papers-progress-text">0 / 0 read</span>
+  </div>
+  <div class="search-bar">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="paper-search" placeholder="search papers..." onkeyup="filterPapers()">
+  </div>
+  <div class="papers-grid" id="papers-grid"></div>
+  <button class="add-paper-btn" onclick="openAddPaperModal()">+ add paper</button>
+</div>
+
+<!-- ═══════════ NOTES ═══════════ -->
+<div id="sec-notes" class="section">
+  <div class="section-header">
+    <div class="section-title">Personal Notes</div>
+    <div class="section-meta">Your thoughts, summaries, and key takeaways</div>
+  </div>
+  <div id="notes-container"></div>
+  <button class="add-paper-btn" onclick="addNoteBlock()">+ add note block</button>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <h3>Add Paper</h3>
+    <div class="form-group"><label>Title</label><input type="text" id="m-title" placeholder="Attention Is All You Need"></div>
+    <div class="form-group"><label>Authors / Year</label><input type="text" id="m-authors" placeholder="Vaswani et al., 2017"></div>
+    <div class="form-group"><label>Category</label>
+      <select id="m-cat">
+        <option>Transformers</option><option>LLMs</option><option>Computer Vision</option>
+        <option>NLP</option><option>Generative Models</option><option>Optimization</option>
+        <option>RL/RLHF</option><option>Efficiency</option><option>Theory</option><option>MLOps</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group"><label>arXiv / URL</label><input type="text" id="m-url" placeholder="https://arxiv.org/abs/..."></div>
+    <div class="form-group"><label>Why important (short note)</label><textarea id="m-desc" placeholder="Core architecture behind all modern LLMs..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="savePaper()">Add Paper</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+const MONTHS = [
+  {
+    id:'m1', label:'Month 1', title:'DSA Foundation',
+    color:'#7c6dfa', badge:'M1',
+    weeks:[
+      { label:'Week 1', title:'Arrays, Strings, Hashing', topics:[
+        {id:'m1w1t1', text:'Sliding window patterns', tag:'hot'},
+        {id:'m1w1t2', text:'Two pointers', tag:''},
+        {id:'m1w1t3', text:'Prefix sums + Kadane\'s algo', tag:'hot'},
+        {id:'m1w1t4', text:'Boyer-Moore voting algorithm', tag:'miss'},
+        {id:'m1w1t5', text:'Rabin-Karp string hashing', tag:'miss'},
+        {id:'m1w1t6', text:'HashMap / HashSet patterns', tag:''},
+      ]},
+      { label:'Week 2', title:'Binary Search + Recursion', topics:[
+        {id:'m1w2t1', text:'Binary search on answer space', tag:'hot'},
+        {id:'m1w2t2', text:'Bisect module variants', tag:''},
+        {id:'m1w2t3', text:'Recursion trees & analysis', tag:''},
+        {id:'m1w2t4', text:'Backtracking patterns', tag:'hot'},
+        {id:'m1w2t5', text:'Memoization vs tabulation', tag:'miss'},
+      ]},
+      { label:'Week 3', title:'LinkedList, Stack, Queue', topics:[
+        {id:'m1w3t1', text:'Fast/slow pointer patterns', tag:''},
+        {id:'m1w3t2', text:'Monotonic stack', tag:'hot'},
+        {id:'m1w3t3', text:'Deque patterns', tag:''},
+        {id:'m1w3t4', text:'LRU / LFU cache implementation', tag:'miss'},
+        {id:'m1w3t5', text:'Queue using two stacks', tag:'miss'},
+      ]},
+      { label:'Week 4', title:'Trees', topics:[
+        {id:'m1w4t1', text:'BST · AVL · Red-Black (concepts)', tag:''},
+        {id:'m1w4t2', text:'Segment tree build + query', tag:'hot'},
+        {id:'m1w4t3', text:'Fenwick / Binary Indexed Tree', tag:'miss'},
+        {id:'m1w4t4', text:'Trie + compressed trie', tag:''},
+        {id:'m1w4t5', text:'Morris traversal (O(1) space)', tag:'miss'},
+      ]},
+    ]
+  },
+  {
+    id:'m2', label:'Month 2', title:'Advanced DSA + Dev Tools',
+    color:'#2dd4bf', badge:'M2',
+    weeks:[
+      { label:'Week 1', title:'Graph Algorithms', topics:[
+        {id:'m2w1t1', text:'Dijkstra / A* / Bellman-Ford', tag:'hot'},
+        {id:'m2w1t2', text:'Floyd-Warshall all-pairs', tag:'miss'},
+        {id:'m2w1t3', text:'Tarjan\'s SCC algorithm', tag:'miss'},
+        {id:'m2w1t4', text:'Max flow / min cut', tag:'miss'},
+        {id:'m2w1t5', text:'Bipartite matching', tag:'miss'},
+        {id:'m2w1t6', text:'Topological sort variants', tag:'hot'},
+      ]},
+      { label:'Week 2', title:'Dynamic Programming — All Patterns', topics:[
+        {id:'m2w2t1', text:'Interval DP', tag:'hot'},
+        {id:'m2w2t2', text:'Bitmask DP', tag:'miss'},
+        {id:'m2w2t3', text:'DP on trees', tag:'miss'},
+        {id:'m2w2t4', text:'Digit DP', tag:'miss'},
+        {id:'m2w2t5', text:'Knuth\'s optimization', tag:'miss'},
+        {id:'m2w2t6', text:'Profile DP', tag:'miss'},
+      ]},
+      { label:'Week 3', title:'Algorithms ML Engineers Miss', topics:[
+        {id:'m2w3t1', text:'KMP string matching', tag:'miss'},
+        {id:'m2w3t2', text:'Z-algorithm', tag:'miss'},
+        {id:'m2w3t3', text:'Suffix arrays', tag:'miss'},
+        {id:'m2w3t4', text:'Sparse table (RMQ)', tag:'miss'},
+        {id:'m2w3t5', text:'Heavy-light decomposition', tag:'miss'},
+        {id:'m2w3t6', text:'sqrt decomposition', tag:'miss'},
+      ]},
+      { label:'Week 4', title:'Dev Tools Mastery', topics:[
+        {id:'m2w4t1', text:'Git internals (DAG model, rebase)', tag:''},
+        {id:'m2w4t2', text:'Docker + multi-stage builds', tag:'hot'},
+        {id:'m2w4t3', text:'Linux / bash scripting', tag:''},
+        {id:'m2w4t4', text:'Async Python (asyncio)', tag:'miss'},
+        {id:'m2w4t5', text:'Pydantic v2 · Poetry · uv', tag:''},
+        {id:'m2w4t6', text:'GitHub Actions CI/CD pipelines', tag:'hot'},
+      ]},
+    ]
+  },
+  {
+    id:'m3', label:'Month 3', title:'Mathematical Intuition + Hidden Algorithms',
+    color:'#fb7185', badge:'M3',
+    weeks:[
+      { label:'Week 1', title:'Linear Algebra — the ML Engine', topics:[
+        {id:'m3w1t1', text:'Eigendecomposition — what PCA really does', tag:'hot'},
+        {id:'m3w1t2', text:'SVD — image compression, LSA, recommender', tag:'hot'},
+        {id:'m3w1t3', text:'Matrix calculus — Jacobians, Hessians', tag:'miss'},
+        {id:'m3w1t4', text:'Einstein notation — tensor ops', tag:'miss'},
+        {id:'m3w1t5', text:'Matrix norms: L0,L1,L2,Frobenius,Nuclear', tag:'miss'},
+        {id:'m3w1t6', text:'Rank, null space, column space intuition', tag:'miss'},
+      ]},
+      { label:'Week 2', title:'Probability + Statistics (real depth)', topics:[
+        {id:'m3w2t1', text:'MLE vs MAP vs Bayesian inference', tag:'hot'},
+        {id:'m3w2t2', text:'KL divergence · JS divergence · Wasserstein', tag:'miss'},
+        {id:'m3w2t3', text:'Exponential family distributions', tag:'miss'},
+        {id:'m3w2t4', text:'MCMC · Gibbs sampling', tag:'miss'},
+        {id:'m3w2t5', text:'Hypothesis testing: p-value, power, FDR', tag:'miss'},
+        {id:'m3w2t6', text:'Bayesian conjugate priors', tag:'miss'},
+      ]},
+      { label:'Week 3', title:'Information Theory + Optimization', topics:[
+        {id:'m3w3t1', text:'Entropy · Cross-entropy · Mutual information', tag:'hot'},
+        {id:'m3w3t2', text:'Variational inference — ELBO derivation', tag:'miss'},
+        {id:'m3w3t3', text:'Convex optimization — KKT conditions', tag:'miss'},
+        {id:'m3w3t4', text:'Lagrangian duality — SVM kernel trick', tag:'miss'},
+        {id:'m3w3t5', text:'Natural gradient descent (Fisher information)', tag:'miss'},
+        {id:'m3w3t6', text:'Proximal gradient methods', tag:'miss'},
+      ]},
+      { label:'Week 4', title:'Algorithms That Power ML Systems', topics:[
+        {id:'m3w4t1', text:'Approximate Nearest Neighbor — HNSW, FAISS', tag:'hot'},
+        {id:'m3w4t2', text:'LSH — Locality Sensitive Hashing', tag:'miss'},
+        {id:'m3w4t3', text:'Bloom filters + Count-min sketch', tag:'miss'},
+        {id:'m3w4t4', text:'Reservoir sampling', tag:'miss'},
+        {id:'m3w4t5', text:'HyperLogLog for cardinality estimation', tag:'miss'},
+        {id:'m3w4t6', text:'KD-trees + Ball trees', tag:'miss'},
+      ]},
+    ]
+  },
+  {
+    id:'m4', label:'Month 4', title:'ML/DL Deep Dive — From Scratch',
+    color:'#378add', badge:'M4',
+    weeks:[
+      { label:'Week 1', title:'Classical ML Internals', topics:[
+        {id:'m4w1t1', text:'Derive linear/logistic regression (MLE view)', tag:''},
+        {id:'m4w1t2', text:'SVM — kernel trick, dual problem derivation', tag:'miss'},
+        {id:'m4w1t3', text:'Decision trees — impurity math, pruning', tag:'miss'},
+        {id:'m4w1t4', text:'XGBoost — 2nd order Taylor expansion', tag:'hot'},
+        {id:'m4w1t5', text:'CatBoost / LightGBM differences', tag:'hot'},
+        {id:'m4w1t6', text:'Ensemble: bagging vs boosting math', tag:'miss'},
+      ]},
+      { label:'Week 2', title:'Deep Learning Optimization', topics:[
+        {id:'m4w2t1', text:'Vanishing/exploding gradients — solutions', tag:'miss'},
+        {id:'m4w2t2', text:'Weight init — He, Xavier, LeCun math', tag:'miss'},
+        {id:'m4w2t3', text:'BatchNorm · LayerNorm · RMSNorm internals', tag:'miss'},
+        {id:'m4w2t4', text:'Optimizers: SGD→Momentum→Adam→AdamW→Lion', tag:'hot'},
+        {id:'m4w2t5', text:'Learning rate schedules: cosine, warmup, cyclic', tag:'miss'},
+        {id:'m4w2t6', text:'Gradient clipping strategies', tag:'miss'},
+      ]},
+      { label:'Week 3', title:'Generative Models Deep', topics:[
+        {id:'m4w3t1', text:'VAE — ELBO + reparameterization trick', tag:'miss'},
+        {id:'m4w3t2', text:'GAN: training dynamics, mode collapse, WGAN', tag:'miss'},
+        {id:'m4w3t3', text:'Normalizing flows — change of variables', tag:'miss'},
+        {id:'m4w3t4', text:'Diffusion models — DDPM, DDIM, score matching', tag:'hot'},
+        {id:'m4w3t5', text:'Energy-based models', tag:'miss'},
+      ]},
+      { label:'Week 4', title:'Advanced Training Techniques', topics:[
+        {id:'m4w4t1', text:'Contrastive learning — SimCLR, MoCo, NT-Xent', tag:'hot'},
+        {id:'m4w4t2', text:'Self-supervised learning — BYOL, DINO, MAE', tag:'hot'},
+        {id:'m4w4t3', text:'Knowledge distillation', tag:'miss'},
+        {id:'m4w4t4', text:'Mixed precision training — FP16, BF16, FP8', tag:'miss'},
+        {id:'m4w4t5', text:'Gradient checkpointing + accumulation', tag:'miss'},
+        {id:'m4w4t6', text:'Curriculum learning + data augmentation strategies', tag:'miss'},
+      ]},
+    ]
+  },
+  {
+    id:'m5', label:'Month 5', title:'Computer Vision + NLP Mastery',
+    color:'#fbbf24', badge:'M5',
+    weeks:[
+      { label:'Week 1-2', title:'Computer Vision', topics:[
+        {id:'m5w1t1', text:'CNN internals — receptive field, dilation, depthwise', tag:'miss'},
+        {id:'m5w1t2', text:'Object detection: YOLO v1–v11, DETR, RT-DETR', tag:'hot'},
+        {id:'m5w1t3', text:'Segmentation: Mask R-CNN, SAM, SAM2', tag:'hot'},
+        {id:'m5w1t4', text:'3D vision: NeRF, Gaussian Splatting', tag:'hot'},
+        {id:'m5w1t5', text:'Multimodal: CLIP, ALIGN, SigLIP', tag:'hot'},
+        {id:'m5w1t6', text:'Image generation: Stable Diffusion, FLUX', tag:'hot'},
+        {id:'m5w1t7', text:'Optical flow — RAFT', tag:'miss'},
+      ]},
+      { label:'Week 3-4', title:'NLP Deep', topics:[
+        {id:'m5w2t1', text:'Tokenization: BPE, WordPiece, SentencePiece', tag:'miss'},
+        {id:'m5w2t2', text:'Word2Vec · GloVe · FastText — skip-gram math', tag:'miss'},
+        {id:'m5w2t3', text:'BERT — MLM, NSP, fine-tuning strategies', tag:'hot'},
+        {id:'m5w2t4', text:'RoBERTa, DeBERTa, ELECTRA differences', tag:'miss'},
+        {id:'m5w2t5', text:'CRF on top of BERT for sequence labeling', tag:'miss'},
+        {id:'m5w2t6', text:'Cross-lingual models — mBERT, XLM-R', tag:'miss'},
+        {id:'m5w2t7', text:'Named entity + relation extraction at scale', tag:''},
+      ]},
+    ]
+  },
+  {
+    id:'m6', label:'Month 6', title:'All Transformer Variants',
+    color:'#a78bfa', badge:'M6',
+    weeks:[
+      { label:'Core Attention', title:'Attention Internals', topics:[
+        {id:'m6w1t1', text:'Original Transformer — full derivation (Vaswani 2017)', tag:'hot'},
+        {id:'m6w1t2', text:'MHA vs MQA vs GQA — KV cache memory math', tag:'hot'},
+        {id:'m6w1t3', text:'Positional: sinusoidal vs learned vs RoPE vs ALiBi', tag:'miss'},
+        {id:'m6w1t4', text:'Flash Attention v1/v2/v3 — IO-aware exact attention', tag:'hot'},
+        {id:'m6w1t5', text:'KV cache mechanics — prefill vs decode', tag:'hot'},
+      ]},
+      { label:'Encoder-Only', title:'BERT Family', topics:[
+        {id:'m6w2t1', text:'BERT · RoBERTa · ALBERT · DistilBERT', tag:''},
+        {id:'m6w2t2', text:'DeBERTa — disentangled attention mechanism', tag:'miss'},
+        {id:'m6w2t3', text:'ELECTRA — replaced token detection', tag:'miss'},
+        {id:'m6w2t4', text:'BigBird · Longformer — sparse attention', tag:'miss'},
+      ]},
+      { label:'Decoder-Only', title:'LLM Family', topics:[
+        {id:'m6w3t1', text:'GPT-1/2/3/4 architecture progression', tag:''},
+        {id:'m6w3t2', text:'LLaMA 1/2/3 — RMSNorm, SwiGLU, RoPE', tag:'hot'},
+        {id:'m6w3t3', text:'Mistral — sliding window attention', tag:'hot'},
+        {id:'m6w3t4', text:'Mixtral MoE — expert routing strategies', tag:'hot'},
+        {id:'m6w3t5', text:'Qwen / DeepSeek architecture details', tag:'hot'},
+        {id:'m6w3t6', text:'Phi family — small but strong', tag:'hot'},
+      ]},
+      { label:'Enc-Dec', title:'T5/BART Family', topics:[
+        {id:'m6w4t1', text:'T5 — text-to-text unified framework', tag:''},
+        {id:'m6w4t2', text:'BART — denoising pretraining', tag:'miss'},
+        {id:'m6w4t3', text:'Flan-T5 — instruction tuning', tag:'hot'},
+        {id:'m6w4t4', text:'mT5 / mBART — multilingual variants', tag:'miss'},
+      ]},
+      { label:'Vision Transformers', title:'ViT Family', topics:[
+        {id:'m6w5t1', text:'ViT — patch embedding, CLS token', tag:'hot'},
+        {id:'m6w5t2', text:'Swin Transformer — hierarchical shifted window', tag:'hot'},
+        {id:'m6w5t3', text:'DINOv2 — self-supervised ViT', tag:'hot'},
+        {id:'m6w5t4', text:'BEiT / MAE — masked image modeling', tag:'miss'},
+        {id:'m6w5t5', text:'DeiT — data-efficient ViT training', tag:'miss'},
+      ]},
+      { label:'Efficient / SSM', title:'Beyond Transformer', topics:[
+        {id:'m6w6t1', text:'Mamba — state space model, selective scan', tag:'hot'},
+        {id:'m6w6t2', text:'RWKV — linear attention RNN hybrid', tag:'miss'},
+        {id:'m6w6t3', text:'Hyena / H3 — long convolutions', tag:'miss'},
+        {id:'m6w6t4', text:'RetNet — retention mechanism', tag:'miss'},
+        {id:'m6w6t5', text:'Reformer · Linformer · Performer', tag:'miss'},
+      ]},
+      { label:'Reasoning Models', title:'New Paradigm', topics:[
+        {id:'m6w7t1', text:'DeepSeek-R1 — RL for reasoning', tag:'hot'},
+        {id:'m6w7t2', text:'o1 / o3 — chain of thought at inference', tag:'hot'},
+        {id:'m6w7t3', text:'QwQ / Qwen3 — thinking models', tag:'hot'},
+      ]},
+    ]
+  },
+  {
+    id:'m7', label:'Month 7', title:'GenAI Full Stack',
+    color:'#4ade80', badge:'M7',
+    weeks:[
+      { label:'Week 1', title:'LLM Fine-tuning', topics:[
+        {id:'m7w1t1', text:'LoRA / QLoRA / LoftQ', tag:'hot'},
+        {id:'m7w1t2', text:'RLHF pipeline — reward model + PPO', tag:'hot'},
+        {id:'m7w1t3', text:'DPO / IPO / KTO — offline preference', tag:'hot'},
+        {id:'m7w1t4', text:'Constitutional AI / RLAIF', tag:'miss'},
+        {id:'m7w1t5', text:'Axolotl · LLaMA-Factory · Unsloth', tag:''},
+      ]},
+      { label:'Week 2', title:'RAG — All Variants', topics:[
+        {id:'m7w2t1', text:'Naive → Advanced → Modular RAG', tag:'hot'},
+        {id:'m7w2t2', text:'HyDE — hypothetical document embedding', tag:'miss'},
+        {id:'m7w2t3', text:'RAPTOR — recursive abstractive processing', tag:'miss'},
+        {id:'m7w2t4', text:'GraphRAG — knowledge graph + LLM', tag:'hot'},
+        {id:'m7w2t5', text:'ColBERT late interaction retrieval', tag:'miss'},
+        {id:'m7w2t6', text:'Hybrid search: BM25 + dense + reranker', tag:'hot'},
+      ]},
+      { label:'Week 3', title:'Frameworks + Libraries', topics:[
+        {id:'m7w3t1', text:'LangChain / LangGraph', tag:'hot'},
+        {id:'m7w3t2', text:'LlamaIndex', tag:'hot'},
+        {id:'m7w3t3', text:'DSPy — programmatic prompting', tag:'miss'},
+        {id:'m7w3t4', text:'Instructor — structured outputs', tag:'miss'},
+        {id:'m7w3t5', text:'Outlines — constrained generation', tag:'miss'},
+        {id:'m7w3t6', text:'CrewAI · AutoGen · Swarm', tag:'hot'},
+      ]},
+      { label:'Week 4', title:'Inference + Evals + Safety', topics:[
+        {id:'m7w4t1', text:'vLLM — PagedAttention serving', tag:'hot'},
+        {id:'m7w4t2', text:'Quantization: GPTQ, AWQ, GGUF', tag:'hot'},
+        {id:'m7w4t3', text:'Speculative decoding', tag:'miss'},
+        {id:'m7w4t4', text:'RAGAS · DeepEval evaluation', tag:'hot'},
+        {id:'m7w4t5', text:'LangSmith / Langfuse observability', tag:'hot'},
+        {id:'m7w4t6', text:'Guardrails AI · NeMo Guardrails', tag:'miss'},
+      ]},
+    ]
+  },
+  {
+    id:'m8', label:'Month 8', title:'Systems + MLOps + Cloud',
+    color:'#e879f9', badge:'M8',
+    weeks:[
+      { label:'Week 1', title:'System Design', topics:[
+        {id:'m8w1t1', text:'Recommendation system end-to-end', tag:'hot'},
+        {id:'m8w1t2', text:'Real-time fraud detection system', tag:'hot'},
+        {id:'m8w1t3', text:'LLM serving infrastructure design', tag:'hot'},
+        {id:'m8w1t4', text:'Search ranking system', tag:'hot'},
+        {id:'m8w1t5', text:'Feature store design', tag:'miss'},
+        {id:'m8w1t6', text:'CAP theorem + consistent hashing', tag:'hot'},
+      ]},
+      { label:'Week 2', title:'MLOps Stack', topics:[
+        {id:'m8w2t1', text:'MLflow · Weights & Biases', tag:''},
+        {id:'m8w2t2', text:'Kubeflow pipelines', tag:''},
+        {id:'m8w2t3', text:'Feast / Tecton feature store', tag:'miss'},
+        {id:'m8w2t4', text:'Evidently AI drift monitoring', tag:''},
+        {id:'m8w2t5', text:'DVC data versioning', tag:''},
+        {id:'m8w2t6', text:'Great Expectations / Soda data validation', tag:'miss'},
+      ]},
+      { label:'Week 3', title:'Cloud — AWS + Azure', topics:[
+        {id:'m8w3t1', text:'SageMaker pipelines + endpoints', tag:'hot'},
+        {id:'m8w3t2', text:'Azure ML + Prompt Flow', tag:'hot'},
+        {id:'m8w3t3', text:'Databricks Workflows + Unity Catalog', tag:'hot'},
+        {id:'m8w3t4', text:'Kubernetes + Kubeflow setup', tag:'miss'},
+        {id:'m8w3t5', text:'Terraform for ML infrastructure', tag:''},
+      ]},
+      { label:'Week 4', title:'Data Engineering', topics:[
+        {id:'m8w4t1', text:'Spark optimization — AQE, broadcast joins', tag:'miss'},
+        {id:'m8w4t2', text:'Delta Lake / Iceberg / Hudi', tag:'hot'},
+        {id:'m8w4t3', text:'dbt + data modeling', tag:''},
+        {id:'m8w4t4', text:'Kafka Streams + Flink', tag:''},
+        {id:'m8w4t5', text:'Real-time feature pipelines', tag:'hot'},
+      ]},
+    ]
+  },
+  {
+    id:'m9', label:'Month 9', title:'Portfolio + Interview Grind',
+    color:'#f97316', badge:'M9',
+    weeks:[
+      { label:'Projects', title:'3 Flagship Projects', topics:[
+        {id:'m9w1t1', text:'Project 1: Production RAG app (GraphRAG+vLLM+RAGAS)', tag:''},
+        {id:'m9w1t2', text:'Project 2: End-to-end ML system + monitoring', tag:''},
+        {id:'m9w1t3', text:'Project 3: Domain project (fraud / rec / multimodal)', tag:''},
+        {id:'m9w1t4', text:'3+ technical blog posts published', tag:''},
+        {id:'m9w1t5', text:'2 paper reproductions on GitHub', tag:''},
+        {id:'m9w1t6', text:'1 open-source contribution merged', tag:''},
+      ]},
+      { label:'Interview Prep', title:'Coding + Design', topics:[
+        {id:'m9w2t1', text:'200+ LeetCode solved (70% Medium, 10% Hard)', tag:'hot'},
+        {id:'m9w2t2', text:'10+ Pramp / Interviewing.io mock sessions', tag:'hot'},
+        {id:'m9w2t3', text:'10+ ML system design mocks', tag:'hot'},
+        {id:'m9w2t4', text:'500+ ML theory Q&A self-tested', tag:''},
+        {id:'m9w2t5', text:'Behavioral (STAR format) for 10 scenarios', tag:''},
+      ]},
+      { label:'Job Strategy', title:'Offer Strategy', topics:[
+        {id:'m9w3t1', text:'Apply to 5+ companies simultaneously', tag:'hot'},
+        {id:'m9w3t2', text:'LinkedIn profile optimized (banner, summary)', tag:''},
+        {id:'m9w3t3', text:'Referral outreach to 10+ people', tag:''},
+        {id:'m9w3t4', text:'Counter every offer — minimum 1 round', tag:'hot'},
+        {id:'m9w3t5', text:'Negotiate equity + bonus separately', tag:'miss'},
+      ]},
+    ]
+  }
+];
+
+const DEFAULT_PAPERS = [
+  {id:'p1',title:'Attention Is All You Need',authors:'Vaswani et al., 2017',cat:'Transformers',url:'https://arxiv.org/abs/1706.03762',desc:'The original transformer architecture. Foundation of all modern LLMs.',read:false},
+  {id:'p2',title:'BERT: Pre-training of Deep Bidirectional Transformers',authors:'Devlin et al., 2018',cat:'NLP',url:'https://arxiv.org/abs/1810.04805',desc:'Bidirectional pre-training, masked language modeling.',read:false},
+  {id:'p3',title:'Language Models are Few-Shot Learners (GPT-3)',authors:'Brown et al., 2020',cat:'LLMs',url:'https://arxiv.org/abs/2005.14165',desc:'In-context learning, few-shot prompting, emergent capabilities.',read:false},
+  {id:'p4',title:'Denoising Diffusion Probabilistic Models',authors:'Ho et al., 2020',cat:'Generative Models',url:'https://arxiv.org/abs/2006.11239',desc:'DDPM — the paper that launched the diffusion model revolution.',read:false},
+  {id:'p5',title:'LLaMA: Open and Efficient LLMs',authors:'Touvron et al., 2023',cat:'LLMs',url:'https://arxiv.org/abs/2302.13971',desc:'Open-source foundation model, RMSNorm + RoPE + SwiGLU.',read:false},
+  {id:'p6',title:'LoRA: Low-Rank Adaptation of LLMs',authors:'Hu et al., 2021',cat:'LLMs',url:'https://arxiv.org/abs/2106.09685',desc:'Parameter-efficient fine-tuning that changed how we adapt LLMs.',read:false},
+  {id:'p7',title:'Flash Attention: Fast & Memory-Efficient Exact Attention',authors:'Dao et al., 2022',cat:'Efficiency',url:'https://arxiv.org/abs/2205.14135',desc:'IO-aware exact attention — critical for long-context training.',read:false},
+  {id:'p8',title:'An Image is Worth 16x16 Words (ViT)',authors:'Dosovitskiy et al., 2020',cat:'Computer Vision',url:'https://arxiv.org/abs/2010.11929',desc:'Applying transformers directly to image patches.',read:false},
+  {id:'p9',title:'CLIP: Learning Transferable Visual Models',authors:'Radford et al., 2021',cat:'Computer Vision',url:'https://arxiv.org/abs/2103.00020',desc:'Contrastive vision-language pretraining — powers DALL-E & more.',read:false},
+  {id:'p10',title:'Retrieval-Augmented Generation (RAG)',authors:'Lewis et al., 2020',cat:'NLP',url:'https://arxiv.org/abs/2005.11401',desc:'Combining parametric + non-parametric memory for open-domain QA.',read:false},
+  {id:'p11',title:'Training language models to follow instructions (InstructGPT)',authors:'Ouyang et al., 2022',cat:'RL/RLHF',url:'https://arxiv.org/abs/2203.02155',desc:'RLHF applied to GPT — the template for all aligned LLMs.',read:false},
+  {id:'p12',title:'Direct Preference Optimization (DPO)',authors:'Rafailov et al., 2023',cat:'RL/RLHF',url:'https://arxiv.org/abs/2305.18290',desc:'RLHF without the RL — simpler alignment with Bradley-Terry model.',read:false},
+  {id:'p13',title:'Mamba: Linear-Time Sequence Modeling with SSMs',authors:'Gu & Dao, 2023',cat:'Efficiency',url:'https://arxiv.org/abs/2312.00752',desc:'State space models that challenge transformers on long sequences.',read:false},
+  {id:'p14',title:'Mixtral of Experts',authors:'Mistral AI, 2024',cat:'LLMs',url:'https://arxiv.org/abs/2401.04088',desc:'Sparse mixture of experts — efficiency + quality at scale.',read:false},
+  {id:'p15',title:'DeepSeek-R1: Incentivizing Reasoning via RL',authors:'DeepSeek AI, 2025',cat:'LLMs',url:'https://arxiv.org/abs/2501.12948',desc:'RL-based reasoning without supervised data — new SOTA paradigm.',read:false},
+  {id:'p16',title:'XGBoost: A Scalable Tree Boosting System',authors:'Chen & Guestrin, 2016',cat:'Theory',url:'https://arxiv.org/abs/1603.02754',desc:'2nd-order Taylor expansion boosting — still dominates tabular data.',read:false},
+  {id:'p17',title:'Scaling Laws for Neural Language Models',authors:'Kaplan et al., 2020',cat:'Theory',url:'https://arxiv.org/abs/2001.08361',desc:'How performance scales with compute, data, parameters.',read:false},
+  {id:'p18',title:'Swin Transformer: Hierarchical Vision Transformer',authors:'Liu et al., 2021',cat:'Computer Vision',url:'https://arxiv.org/abs/2103.14030',desc:'Shifted window attention — backbone for detection & segmentation.',read:false},
+];
+
+// ══════════════════════════════════════════
+//  STATE + STORAGE
+// ══════════════════════════════════════════
+let state = { done: {}, papers: [], notes: [], lc: 0 };
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('aiml-tracker');
+    if (s) state = { ...state, ...JSON.parse(s) };
+    if (!state.papers || state.papers.length === 0) state.papers = JSON.parse(JSON.stringify(DEFAULT_PAPERS));
+    if (!state.notes) state.notes = [];
+    if (!state.lc) state.lc = 0;
+  } catch(e) { state.papers = JSON.parse(JSON.stringify(DEFAULT_PAPERS)); }
+}
+
+function saveState() {
+  localStorage.setItem('aiml-tracker', JSON.stringify(state));
+}
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function getTopicCount(month) {
+  return month.weeks.reduce((a, w) => a + w.topics.length, 0);
+}
+function getDoneCount(month) {
+  return month.weeks.reduce((a, w) => a + w.topics.filter(t => state.done[t.id]).length, 0);
+}
+function getTotalTopics() {
+  return MONTHS.reduce((a, m) => a + getTopicCount(m), 0);
+}
+function getTotalDone() {
+  return MONTHS.reduce((a, m) => a + getDoneCount(m), 0);
+}
+
+function renderMonthSection(month) {
+  const el = document.getElementById('sec-' + month.id);
+  const total = getTopicCount(month);
+  const done = getDoneCount(month);
+  const pct = total ? Math.round(done / total * 100) : 0;
+
+  el.innerHTML = `
+    <div class="section-header">
+      <div>
+        <div class="section-title">${month.label}: ${month.title}</div>
+        <div class="section-meta">${total} topics · click to toggle complete</div>
+      </div>
+      <span class="section-progress-text">${done}/${total} · ${pct}%</span>
+    </div>
+    ${month.weeks.map((w, wi) => renderWeek(month, w, wi)).join('')}
+  `;
+}
+
+function renderWeek(month, week, wi) {
+  const done = week.topics.filter(t => state.done[t.id]).length;
+  const total = week.topics.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const wid = month.id + '-w' + wi;
+  return `
+    <div class="week-block">
+      <div class="week-header" id="wh-${wid}" onclick="toggleWeek('${wid}')">
+        <div class="week-dot" style="background:${month.color}22;color:${month.color}">${week.label.replace('Week ','W')}</div>
+        <div style="flex:1">
+          <div class="week-title">${week.title}</div>
+          <div style="font-size:11px;color:var(--muted);font-family:var(--mono)">${week.label}</div>
+        </div>
+        <div class="week-bar-mini"><div class="week-bar-fill" style="width:${pct}%;background:${month.color}"></div></div>
+        <div class="week-pct">${pct}%</div>
+        <div class="week-chevron" id="wc-${wid}">▼</div>
+      </div>
+      <div class="week-body" id="wb-${wid}">
+        ${week.topics.map(t => renderTopic(t)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderTopic(t) {
+  const done = state.done[t.id];
+  const tagHtml = t.tag === 'hot' ? `<span class="tag-pill tag-hot">HOT</span>` :
+                  t.tag === 'miss' ? `<span class="tag-pill tag-miss">MISSED</span>` :
+                  t.tag === 'new' ? `<span class="tag-pill tag-new">NEW</span>` : '';
+  return `
+    <div class="topic-item ${done ? 'done' : ''}" id="ti-${t.id}" onclick="toggleTopic('${t.id}')">
+      <div class="topic-checkbox"></div>
+      <div class="topic-name">${t.text}</div>
+      ${tagHtml}
+    </div>
+  `;
+}
+
+function toggleTopic(id) {
+  state.done[id] = !state.done[id];
+  saveState();
+  refreshAll();
+}
+
+function toggleWeek(wid) {
+  const body = document.getElementById('wb-' + wid);
+  const hdr = document.getElementById('wh-' + wid);
+  const chev = document.getElementById('wc-' + wid);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  hdr.classList.toggle('open', !open);
+  chev.classList.toggle('open', !open);
+}
+
+function refreshAll() {
+  // update topic item classes
+  Object.entries(state.done).forEach(([id, done]) => {
+    const el = document.getElementById('ti-' + id);
+    if (el) { el.classList.toggle('done', !!done); }
+  });
+  updateStats();
+}
+
+function updateStats() {
+  const totalDone = getTotalDone();
+  const totalTopics = getTotalTopics();
+  const pct = totalTopics ? Math.round(totalDone / totalTopics * 100) : 0;
+  document.getElementById('total-done').textContent = totalDone;
+  document.getElementById('total-topics').textContent = totalTopics;
+  document.getElementById('overall-fill').style.width = pct + '%';
+  document.getElementById('overall-pct').textContent = pct + '%';
+  const papersRead = state.papers.filter(p => p.read).length;
+  document.getElementById('papers-read').textContent = papersRead;
+  updateDashboard();
+  updatePapersProgress();
+}
+
+function updateDashboard() {
+  // Stats cards
+  const totalDone = getTotalDone();
+  const totalTopics = getTotalTopics();
+  const papersRead = state.papers.filter(p => p.read).length;
+  const cards = document.getElementById('dashboard-cards');
+  cards.innerHTML = `
+    <div class="stat-card"><div class="stat-card-num" style="color:var(--green)">${totalDone}</div><div class="stat-card-label">topics done</div></div>
+    <div class="stat-card"><div class="stat-card-num" style="color:var(--accent2)">${totalTopics - totalDone}</div><div class="stat-card-label">remaining</div></div>
+    <div class="stat-card"><div class="stat-card-num" style="color:var(--teal)">${papersRead}</div><div class="stat-card-label">papers read</div></div>
+    <div class="stat-card"><div class="stat-card-num" style="color:var(--amber)">${state.lc || 0}</div><div class="stat-card-label">LC solved</div></div>
+  `;
+  // Month bars
+  const mb = document.getElementById('month-bars');
+  mb.innerHTML = MONTHS.map(m => {
+    const done = getDoneCount(m);
+    const total = getTopicCount(m);
+    const pct = total ? Math.round(done / total * 100) : 0;
+    return `
+      <div style="margin-bottom:10px">
+        <div class="flex-between" style="margin-bottom:5px">
+          <span style="font-size:12px;font-family:var(--mono);color:var(--muted2)">${m.label}: ${m.title}</span>
+          <span style="font-size:12px;font-family:var(--mono);color:${m.color}">${done}/${total} · ${pct}%</span>
+        </div>
+        <div class="bar-track" style="height:5px"><div class="bar-fill" style="width:${pct}%;background:${m.color}"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  PAPERS
+// ══════════════════════════════════════════
+function renderPapers(filter) {
+  const grid = document.getElementById('papers-grid');
+  let papers = state.papers;
+  if (filter) {
+    const f = filter.toLowerCase();
+    papers = papers.filter(p => p.title.toLowerCase().includes(f) || p.cat.toLowerCase().includes(f) || (p.desc||'').toLowerCase().includes(f));
+  }
+  grid.innerHTML = papers.map(p => `
+    <div class="paper-card ${p.read ? 'read' : ''}" id="pc-${p.id}" onclick="togglePaper('${p.id}')">
+      <div class="paper-top">
+        <div class="paper-check"></div>
+        <div class="paper-content">
+          <div class="paper-title">${p.title}</div>
+          <div class="paper-meta">${p.authors}</div>
+          <div class="paper-desc">${p.desc || ''}</div>
+          <div class="paper-tags">
+            <span class="paper-tag">${p.cat}</span>
+            ${p.url ? `<a href="${p.url}" onclick="event.stopPropagation()" target="_blank" style="font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(124,109,250,.15);color:var(--accent2);font-family:var(--mono);text-decoration:none">arXiv ↗</a>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  updatePapersProgress();
+}
+
+function togglePaper(id) {
+  const p = state.papers.find(x => x.id === id);
+  if (p) { p.read = !p.read; saveState(); renderPapers(document.getElementById('paper-search').value); updateStats(); }
+}
+
+function filterPapers() {
+  renderPapers(document.getElementById('paper-search').value);
+}
+
+function updatePapersProgress() {
+  const read = state.papers.filter(p => p.read).length;
+  const el = document.getElementById('papers-progress-text');
+  if (el) el.textContent = `${read} / ${state.papers.length} read`;
+}
+
+function openAddPaperModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+    ['m-title','m-authors','m-url','m-desc'].forEach(id => document.getElementById(id).value = '');
+  }
+}
+function savePaper() {
+  const title = document.getElementById('m-title').value.trim();
+  if (!title) return;
+  const paper = {
+    id: 'p' + Date.now(),
+    title, authors: document.getElementById('m-authors').value.trim(),
+    cat: document.getElementById('m-cat').value,
+    url: document.getElementById('m-url').value.trim(),
+    desc: document.getElementById('m-desc').value.trim(),
+    read: false
+  };
+  state.papers.push(paper);
+  saveState();
+  renderPapers();
+  closeModal();
+}
+
+// ══════════════════════════════════════════
+//  NOTES
+// ══════════════════════════════════════════
+function renderNotes() {
+  const container = document.getElementById('notes-container');
+  if (!state.notes || state.notes.length === 0) {
+    state.notes = [{id:'n1',title:'General Notes',content:''}];
+  }
+  container.innerHTML = state.notes.map((n, i) => `
+    <div class="notes-area">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <input value="${n.title}" onchange="updateNoteTitle(${i}, this.value)"
+          style="background:none;border:none;outline:none;font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;width:200px;cursor:text">
+        <button onclick="deleteNote(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;font-family:var(--mono)">remove</button>
+      </div>
+      <textarea placeholder="Your notes, key insights, formulas, summaries..." oninput="updateNoteContent(${i}, this.value)">${n.content}</textarea>
+    </div>
+  `).join('');
+}
+
+function addNoteBlock() {
+  state.notes.push({id:'n'+Date.now(), title:'Note Block', content:''});
+  saveState(); renderNotes();
+}
+function updateNoteTitle(i, v) { state.notes[i].title = v; saveState(); }
+function updateNoteContent(i, v) { state.notes[i].content = v; saveState(); }
+function deleteNote(i) { if(confirm('Delete this note?')) { state.notes.splice(i, 1); saveState(); renderNotes(); } }
+
+// ══════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('visible');
+  btn.classList.add('active');
+  if (id === 'papers') renderPapers();
+  if (id === 'notes') renderNotes();
+}
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function saveLc() {
+  state.lc = parseInt(document.getElementById('lc-count').value) || 0;
+  saveState();
+  const pct = Math.min(100, Math.round(state.lc / 200 * 100));
+  document.getElementById('lc-bar').style.width = pct + '%';
+  document.getElementById('lc-pct').textContent = pct + '%';
+  updateStats();
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'aiml-tracker-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function resetAll() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    state = { done: {}, papers: JSON.parse(JSON.stringify(DEFAULT_PAPERS)), notes: [], lc: 0 };
+    saveState();
+    location.reload();
+  }
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+function init() {
+  loadState();
+  MONTHS.forEach(m => renderMonthSection(m));
+  updateStats();
+  document.getElementById('lc-count').value = state.lc || 0;
+  const lcPct = Math.min(100, Math.round((state.lc||0) / 200 * 100));
+  document.getElementById('lc-bar').style.width = lcPct + '%';
+  document.getElementById('lc-pct').textContent = lcPct + '%';
+}
+init();
+</script>
+</body>
+</html>
