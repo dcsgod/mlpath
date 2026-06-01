@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -21,568 +20,533 @@
     --card: #13131e;
   }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Syne’, sans-serif;
-overflow-x: hidden;
-cursor: crosshair;
-}
-
-/* NOISE TEXTURE */
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
-pointer-events: none;
-z-index: 9999;
-opacity: 0.4;
-}
-
-/* HEADER */
-header {
-position: relative;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: flex-start;
-padding: 4rem 6vw;
-overflow: hidden;
-border-bottom: 1px solid var(–border);
-}
-
-.header-grid {
-position: absolute;
-inset: 0;
-background-image:
-linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
-background-size: 60px 60px;
-}
-
-.header-orb {
-position: absolute;
-border-radius: 50%;
-filter: blur(120px);
-pointer-events: none;
-}
-.orb1 { width: 600px; height: 600px; background: rgba(124,58,237,0.18); top: -200px; right: -100px; }
-.orb2 { width: 400px; height: 400px; background: rgba(232,255,71,0.08); bottom: -100px; left: 20%; }
-.orb3 { width: 300px; height: 300px; background: rgba(244,63,94,0.1); top: 30%; left: -100px; }
-
-.tag {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.7rem;
-letter-spacing: 0.2em;
-color: var(–accent1);
-background: rgba(232,255,71,0.08);
-border: 1px solid rgba(232,255,71,0.2);
-padding: 0.4rem 1rem;
-display: inline-block;
-margin-bottom: 2rem;
-animation: fadeDown 0.8s ease both;
-}
-
-h1 {
-font-family: ‘DM Serif Display’, serif;
-font-size: clamp(3.5rem, 8vw, 7rem);
-line-height: 0.95;
-letter-spacing: -0.02em;
-max-width: 900px;
-animation: fadeDown 0.8s ease 0.1s both;
-}
-
-h1 em {
-font-style: italic;
-color: var(–accent1);
-}
-
-.header-sub {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.85rem;
-color: var(–muted);
-max-width: 600px;
-line-height: 1.8;
-margin-top: 2rem;
-animation: fadeDown 0.8s ease 0.2s both;
-}
-
-.header-stats {
-display: flex;
-gap: 3rem;
-margin-top: 3rem;
-animation: fadeDown 0.8s ease 0.3s both;
-}
-
-.stat { display: flex; flex-direction: column; gap: 0.3rem; }
-.stat-num {
-font-family: ‘DM Serif Display’, serif;
-font-size: 2.5rem;
-color: var(–accent1);
-line-height: 1;
-}
-.stat-label { font-family: ‘Space Mono’, monospace; font-size: 0.65rem; color: var(–muted); letter-spacing: 0.15em; text-transform: uppercase; }
-
-.scroll-hint {
-position: absolute;
-bottom: 2rem;
-left: 50%;
-transform: translateX(-50%);
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 0.5rem;
-color: var(–muted);
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-letter-spacing: 0.15em;
-animation: bounce 2s ease infinite;
-}
-
-.scroll-line {
-width: 1px;
-height: 60px;
-background: linear-gradient(to bottom, var(–accent1), transparent);
-}
-
-/* NAVIGATION */
-nav {
-position: sticky;
-top: 0;
-z-index: 100;
-background: rgba(10,10,15,0.9);
-backdrop-filter: blur(20px);
-border-bottom: 1px solid var(–border);
-padding: 0 6vw;
-display: flex;
-gap: 0;
-overflow-x: auto;
-scrollbar-width: none;
-}
-
-nav::-webkit-scrollbar { display: none; }
-
-.nav-item {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-letter-spacing: 0.1em;
-text-transform: uppercase;
-color: var(–muted);
-padding: 1.2rem 1.5rem;
-white-space: nowrap;
-cursor: pointer;
-border-bottom: 2px solid transparent;
-transition: all 0.2s;
-text-decoration: none;
-}
-
-.nav-item:hover { color: var(–accent1); border-bottom-color: var(–accent1); }
-
-/* MAIN CONTENT */
-main { padding: 0 6vw 6rem; }
-
-/* PHASE SECTIONS */
-.phase {
-margin-top: 6rem;
-position: relative;
-}
-
-.phase-header {
-display: flex;
-align-items: flex-start;
-gap: 2rem;
-margin-bottom: 3rem;
-padding-bottom: 2rem;
-border-bottom: 1px solid var(–border);
-}
-
-.phase-number {
-font-family: ‘DM Serif Display’, serif;
-font-size: 5rem;
-line-height: 1;
-color: var(–border);
-flex-shrink: 0;
-user-select: none;
-}
-
-.phase-meta { flex: 1; }
-
-.phase-level {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-letter-spacing: 0.2em;
-text-transform: uppercase;
-margin-bottom: 0.5rem;
-}
-
-.phase-title {
-font-family: ‘DM Serif Display’, serif;
-font-size: clamp(1.8rem, 3vw, 2.8rem);
-line-height: 1.1;
-margin-bottom: 0.8rem;
-}
-
-.phase-desc {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.75rem;
-color: var(–muted);
-line-height: 1.8;
-max-width: 700px;
-}
-
-.phase-duration {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-color: var(–accent1);
-background: rgba(232,255,71,0.07);
-border: 1px solid rgba(232,255,71,0.15);
-padding: 0.3rem 0.8rem;
-display: inline-block;
-margin-top: 0.8rem;
-}
-
-/* TOPIC GRID */
-.topic-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-gap: 1.5px;
-background: var(–border);
-border: 1px solid var(–border);
-}
-
-.topic-card {
-background: var(–card);
-padding: 1.8rem;
-position: relative;
-transition: background 0.2s;
-overflow: hidden;
-}
-
-.topic-card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0;
-width: 3px;
-height: 0;
-transition: height 0.3s ease;
-}
-
-.topic-card:hover { background: #161622; }
-.topic-card:hover::before { height: 100%; }
-
-/* Color accents by category */
-.cat-math .topic-card::before { background: var(–accent3); }
-.cat-stats .topic-card::before { background: var(–accent4); }
-.cat-ml .topic-card::before { background: var(–accent1); }
-.cat-dl .topic-card::before { background: var(–accent2); }
-.cat-cv .topic-card::before { background: var(–accent5); }
-.cat-adv .topic-card::before { background: #10b981; }
-.cat-research .topic-card::before { background: #f59e0b; }
-
-.topic-category {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.6rem;
-letter-spacing: 0.2em;
-text-transform: uppercase;
-margin-bottom: 0.8rem;
-}
-
-.cat-math .topic-category { color: var(–accent3); }
-.cat-stats .topic-category { color: var(–accent4); }
-.cat-ml .topic-category { color: var(–accent1); }
-.cat-dl .topic-category { color: var(–accent2); }
-.cat-cv .topic-category { color: var(–accent5); }
-.cat-adv .topic-category { color: #10b981; }
-.cat-research .topic-category { color: #f59e0b; }
-
-.topic-name {
-font-size: 1rem;
-font-weight: 700;
-margin-bottom: 1rem;
-line-height: 1.3;
-}
-
-.algo-list {
-list-style: none;
-display: flex;
-flex-direction: column;
-gap: 0.35rem;
-}
-
-.algo-list li {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.68rem;
-color: var(–muted);
-padding-left: 1rem;
-position: relative;
-line-height: 1.5;
-}
-
-.algo-list li::before {
-content: ‘→’;
-position: absolute;
-left: 0;
-color: var(–border);
-font-size: 0.6rem;
-}
-
-.algo-list li.important {
-color: var(–text);
-}
-.algo-list li.important::before { color: var(–accent1); }
-
-/* SECTION DIVIDER */
-.section-divider {
-display: flex;
-align-items: center;
-gap: 1.5rem;
-margin: 5rem 0 3rem;
-}
-
-.divider-line { flex: 1; height: 1px; background: var(–border); }
-.divider-label {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-letter-spacing: 0.2em;
-color: var(–muted);
-text-transform: uppercase;
-white-space: nowrap;
-}
-
-/* MILESTONE TRACK */
-.milestone-track {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-gap: 1rem;
-margin-top: 2rem;
-}
-
-.milestone {
-border: 1px solid var(–border);
-padding: 1.5rem;
-position: relative;
-}
-
-.milestone-icon {
-font-size: 1.5rem;
-margin-bottom: 0.8rem;
-display: block;
-}
-
-.milestone-title {
-font-weight: 700;
-font-size: 0.9rem;
-margin-bottom: 0.4rem;
-}
-
-.milestone-desc {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-color: var(–muted);
-line-height: 1.7;
-}
-
-/* FULL WIDTH CARD */
-.full-card {
-background: var(–card);
-border: 1px solid var(–border);
-padding: 2.5rem;
-margin-bottom: 1.5px;
-}
-
-.full-card-title {
-font-family: ‘DM Serif Display’, serif;
-font-size: 1.4rem;
-margin-bottom: 1.5rem;
-display: flex;
-align-items: center;
-gap: 1rem;
-}
-
-.full-card-title span {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-color: var(–muted);
-font-style: normal;
-}
-
-.pills {
-display: flex;
-flex-wrap: wrap;
-gap: 0.5rem;
-}
-
-.pill {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.62rem;
-padding: 0.3rem 0.7rem;
-border: 1px solid var(–border);
-color: var(–muted);
-transition: all 0.2s;
-cursor: default;
-}
-
-.pill:hover { border-color: var(–accent1); color: var(–accent1); }
-.pill.highlight { border-color: rgba(232,255,71,0.3); color: var(–accent1); background: rgba(232,255,71,0.05); }
-
-/* ROADMAP TIMELINE */
-.timeline {
-position: relative;
-padding-left: 2rem;
-margin-top: 2rem;
-}
-
-.timeline::before {
-content: ‘’;
-position: absolute;
-left: 0;
-top: 0; bottom: 0;
-width: 1px;
-background: linear-gradient(to bottom, var(–accent1), var(–accent3), var(–accent2), var(–accent5), transparent);
-}
-
-.timeline-item {
-position: relative;
-margin-bottom: 2.5rem;
-padding-left: 1.5rem;
-}
-
-.timeline-dot {
-position: absolute;
-left: -2.4rem;
-top: 0.3rem;
-width: 8px; height: 8px;
-border-radius: 50%;
-background: var(–accent1);
-}
-
-.timeline-item:nth-child(2) .timeline-dot { background: var(–accent3); }
-.timeline-item:nth-child(3) .timeline-dot { background: var(–accent4); }
-.timeline-item:nth-child(4) .timeline-dot { background: var(–accent2); }
-.timeline-item:nth-child(5) .timeline-dot { background: var(–accent5); }
-.timeline-item:nth-child(6) .timeline-dot { background: #10b981; }
-.timeline-item:nth-child(7) .timeline-dot { background: #f59e0b; }
-
-.timeline-period {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.6rem;
-color: var(–accent1);
-letter-spacing: 0.15em;
-text-transform: uppercase;
-margin-bottom: 0.4rem;
-}
-
-.timeline-item:nth-child(2) .timeline-period { color: var(–accent3); }
-.timeline-item:nth-child(3) .timeline-period { color: var(–accent4); }
-.timeline-item:nth-child(4) .timeline-period { color: var(–accent2); }
-.timeline-item:nth-child(5) .timeline-period { color: var(–accent5); }
-.timeline-item:nth-child(6) .timeline-period { color: #10b981; }
-.timeline-item:nth-child(7) .timeline-period { color: #f59e0b; }
-
-.timeline-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
-.timeline-body { font-family: ‘Space Mono’, monospace; font-size: 0.68rem; color: var(–muted); line-height: 1.8; }
-
-/* TWO COL */
-.two-col {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 1.5px;
-background: var(–border);
-border: 1px solid var(–border);
-margin-top: 2rem;
-}
-
-@media (max-width: 768px) {
-.two-col { grid-template-columns: 1fr; }
-.header-stats { gap: 1.5rem; }
-.stat-num { font-size: 1.8rem; }
-}
-
-/* FOOTER */
-footer {
-border-top: 1px solid var(–border);
-padding: 3rem 6vw;
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 2rem;
-flex-wrap: wrap;
-}
-
-.footer-text {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-color: var(–muted);
-line-height: 1.8;
-}
-
-.footer-mark {
-font-family: ‘DM Serif Display’, serif;
-font-size: 1.2rem;
-color: var(–accent1);
-}
-
-/* ANIMATIONS */
-@keyframes fadeDown {
-from { opacity: 0; transform: translateY(-20px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bounce {
-0%, 100% { transform: translateX(-50%) translateY(0); }
-50% { transform: translateX(-50%) translateY(8px); }
-}
-
-/* INTERSECTION OBSERVER */
-.reveal {
-opacity: 0;
-transform: translateY(30px);
-transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.reveal.visible {
-opacity: 1;
-transform: translateY(0);
-}
-
-/* HIGHLIGHT BOX */
-.highlight-box {
-border: 1px solid rgba(232,255,71,0.2);
-background: rgba(232,255,71,0.03);
-padding: 2rem;
-margin-top: 2rem;
-}
-
-.highlight-box-title {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-letter-spacing: 0.2em;
-color: var(–accent1);
-text-transform: uppercase;
-margin-bottom: 1rem;
-}
-
-.highlight-box p {
-font-family: ‘Space Mono’, monospace;
-font-size: 0.72rem;
-color: var(–muted);
-line-height: 1.9;
-}
-
-.inline-accent { color: var(–accent1); }
-.inline-orange { color: var(–accent2); }
-.inline-purple { color: var(–accent3); }
-.inline-cyan { color: var(–accent4); }
-
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  header {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem 6vw;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .header-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  .orb1 { width: 600px; height: 600px; background: rgba(124,58,237,0.18); top: -200px; right: -100px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(232,255,71,0.08); bottom: -100px; left: 20%; }
+  .orb3 { width: 300px; height: 300px; background: rgba(244,63,94,0.1); top: 30%; left: -100px; }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent1);
+    background: rgba(232,255,71,0.08);
+    border: 1px solid rgba(232,255,71,0.2);
+    padding: 0.4rem 1rem;
+    display: inline-block;
+    margin-bottom: 2rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    animation: fadeDown 0.8s ease 0.1s both;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent1);
+  }
+
+  .header-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-top: 2rem;
+    animation: fadeDown 0.8s ease 0.2s both;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 3rem;
+    animation: fadeDown 0.8s ease 0.3s both;
+  }
+
+  .stat { display: flex; flex-direction: column; gap: 0.3rem; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.5rem;
+    color: var(--accent1);
+    line-height: 1;
+  }
+  .stat-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    animation: bounce 2s ease infinite;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--accent1), transparent);
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 6vw;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 1.2rem 1.5rem;
+    white-space: nowrap;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { color: var(--accent1); border-bottom-color: var(--accent1); }
+
+  main { padding: 0 6vw 6rem; }
+
+  .phase {
+    margin-top: 6rem;
+    position: relative;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--border);
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .phase-meta { flex: 1; }
+
+  .phase-level {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+
+  .phase-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 700px;
+  }
+
+  .phase-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent1);
+    background: rgba(232,255,71,0.07);
+    border: 1px solid rgba(232,255,71,0.15);
+    padding: 0.3rem 0.8rem;
+    display: inline-block;
+    margin-top: 0.8rem;
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .topic-card {
+    background: var(--card);
+    padding: 1.8rem;
+    position: relative;
+    transition: background 0.2s;
+    overflow: hidden;
+  }
+
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    transition: height 0.3s ease;
+  }
+
+  .topic-card:hover { background: #161622; }
+  .topic-card:hover::before { height: 100%; }
+
+  .cat-math .topic-card::before { background: var(--accent3); }
+  .cat-stats .topic-card::before { background: var(--accent4); }
+  .cat-ml .topic-card::before { background: var(--accent1); }
+  .cat-dl .topic-card::before { background: var(--accent2); }
+  .cat-cv .topic-card::before { background: var(--accent5); }
+  .cat-adv .topic-card::before { background: #10b981; }
+  .cat-research .topic-card::before { background: #f59e0b; }
+
+  .topic-category {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .cat-math .topic-category { color: var(--accent3); }
+  .cat-stats .topic-category { color: var(--accent4); }
+  .cat-ml .topic-category { color: var(--accent1); }
+  .cat-dl .topic-category { color: var(--accent2); }
+  .cat-cv .topic-category { color: var(--accent5); }
+  .cat-adv .topic-category { color: #10b981; }
+  .cat-research .topic-category { color: #f59e0b; }
+
+  .topic-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .algo-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .algo-list li {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .algo-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+    font-size: 0.6rem;
+  }
+
+  .algo-list li.important { color: var(--text); }
+  .algo-list li.important::before { color: var(--accent1); }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 5rem 0 3rem;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .milestone-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .milestone {
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .milestone-icon { font-size: 1.5rem; margin-bottom: 0.8rem; display: block; }
+  .milestone-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.4rem; }
+  .milestone-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .full-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    margin-bottom: 1.5px;
+  }
+
+  .full-card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .full-card-title span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    font-style: normal;
+  }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .pill:hover { border-color: var(--accent1); color: var(--accent1); }
+  .pill.highlight { border-color: rgba(232,255,71,0.3); color: var(--accent1); background: rgba(232,255,71,0.05); }
+
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-top: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent1), var(--accent3), var(--accent2), var(--accent5), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -2.4rem;
+    top: 0.3rem;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent1);
+  }
+
+  .timeline-item:nth-child(2) .timeline-dot { background: var(--accent3); }
+  .timeline-item:nth-child(3) .timeline-dot { background: var(--accent4); }
+  .timeline-item:nth-child(4) .timeline-dot { background: var(--accent2); }
+  .timeline-item:nth-child(5) .timeline-dot { background: var(--accent5); }
+  .timeline-item:nth-child(6) .timeline-dot { background: #10b981; }
+  .timeline-item:nth-child(7) .timeline-dot { background: #f59e0b; }
+
+  .timeline-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent1);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .timeline-item:nth-child(2) .timeline-period { color: var(--accent3); }
+  .timeline-item:nth-child(3) .timeline-period { color: var(--accent4); }
+  .timeline-item:nth-child(4) .timeline-period { color: var(--accent2); }
+  .timeline-item:nth-child(5) .timeline-period { color: var(--accent5); }
+  .timeline-item:nth-child(6) .timeline-period { color: #10b981; }
+  .timeline-item:nth-child(7) .timeline-period { color: #f59e0b; }
+
+  .timeline-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+  .timeline-body { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--muted); line-height: 1.8; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .header-stats { gap: 1.5rem; }
+    .stat-num { font-size: 1.8rem; }
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .footer-mark {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--accent1);
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .highlight-box {
+    border: 1px solid rgba(232,255,71,0.2);
+    background: rgba(232,255,71,0.03);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .highlight-box-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--accent1);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .highlight-box p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  .inline-accent { color: var(--accent1); }
+  .inline-orange { color: var(--accent2); }
+  .inline-purple { color: var(--accent3); }
+  .inline-cyan { color: var(--accent4); }
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
 
 <header>
   <div class="header-grid"></div>
@@ -623,8 +587,6 @@ line-height: 1.9;
   </div>
 </header>
 
-<!-- NAV -->
-
 <nav>
   <a class="nav-item" href="#phase1">01 · Math</a>
   <a class="nav-item" href="#phase2">02 · Stats</a>
@@ -638,8 +600,6 @@ line-height: 1.9;
 </nav>
 
 <main>
-
-  <!-- OVERVIEW TIMELINE -->
 
   <div class="section-divider">
     <div class="divider-line"></div>
@@ -660,19 +620,19 @@ line-height: 1.9;
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-period">Months 4–6</div>
-          <div class="timeline-title">Statistics & Probabilistic Modeling</div>
+          <div class="timeline-title">Statistics &amp; Probabilistic Modeling</div>
           <div class="timeline-body">Bayesian inference, frequentist statistics, estimation theory, hypothesis testing, probabilistic graphical models, MCMC.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-period">Months 7–10</div>
           <div class="timeline-title">Classical Machine Learning</div>
-          <div class="timeline-body">Every supervised & unsupervised algorithm, ensemble methods, kernel methods, optimization theory, generalization theory.</div>
+          <div class="timeline-body">Every supervised &amp; unsupervised algorithm, ensemble methods, kernel methods, optimization theory, generalization theory.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-period">Months 11–16</div>
-          <div class="timeline-title">Deep Learning & Neural Architectures</div>
+          <div class="timeline-title">Deep Learning &amp; Neural Architectures</div>
           <div class="timeline-body">CNNs, RNNs, Transformers, GANs, VAEs, diffusion models, optimization for DL, training at scale.</div>
         </div>
         <div class="timeline-item">
@@ -684,7 +644,7 @@ line-height: 1.9;
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-period">Months 23–28</div>
-          <div class="timeline-title">Advanced Topics & Systems</div>
+          <div class="timeline-title">Advanced Topics &amp; Systems</div>
           <div class="timeline-body">RL, meta-learning, federated learning, ML systems, interpretability, robustness, causality.</div>
         </div>
         <div class="timeline-item">
@@ -715,15 +675,14 @@ line-height: 1.9;
         </div>
         <div class="milestone">
           <span class="milestone-icon">🛡️</span>
-          <div class="milestone-title">Safety & Alignment Mindset</div>
+          <div class="milestone-title">Safety &amp; Alignment Mindset</div>
           <div class="milestone-desc">Interpretability, robustness, RLHF, Constitutional AI, mechanistic interpretability — Anthropic-specific focus above all other labs.</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== PHASE 1: MATH ==================== -->
-
+  <!-- PHASE 1: MATH -->
   <div class="phase reveal" id="phase1">
     <div class="phase-header">
       <div class="phase-number">01</div>
@@ -734,124 +693,115 @@ line-height: 1.9;
           The language of machine learning is mathematics. Master these before writing a single line of ML code.
           Every algorithm you will ever use is a mathematical object — an optimization problem, a geometric transform, or a probabilistic model.
         </div>
-        <div class="phase-duration">⏱ 3–4 months full-time · Resources: Gilbert Strang, Spivak, Cover & Thomas</div>
+        <div class="phase-duration">⏱ 3–4 months full-time · Resources: Gilbert Strang, Spivak, Cover &amp; Thomas</div>
       </div>
     </div>
 
-```
-<div class="topic-grid cat-math">
-  <div class="topic-card">
-    <div class="topic-category">Linear Algebra</div>
-    <div class="topic-name">Vector Spaces & Matrices</div>
-    <ul class="algo-list">
-      <li class="important">Vector spaces, subspaces, basis, dimension</li>
-      <li class="important">Matrix operations, rank, nullity</li>
-      <li class="important">Eigenvalues & eigenvectors</li>
-      <li class="important">Singular Value Decomposition (SVD)</li>
-      <li>QR decomposition, LU decomposition</li>
-      <li>Cholesky decomposition</li>
-      <li class="important">Positive definite / semi-definite matrices</li>
-      <li>Gram-Schmidt orthogonalization</li>
-      <li class="important">Matrix calculus — gradients, Jacobians, Hessians</li>
-      <li>Tensor products, Kronecker products</li>
-      <li>Spectral theorem, Perron-Frobenius</li>
-      <li>Low-rank approximations</li>
-    </ul>
+    <div class="topic-grid cat-math">
+      <div class="topic-card">
+        <div class="topic-category">Linear Algebra</div>
+        <div class="topic-name">Vector Spaces &amp; Matrices</div>
+        <ul class="algo-list">
+          <li class="important">Vector spaces, subspaces, basis, dimension</li>
+          <li class="important">Matrix operations, rank, nullity</li>
+          <li class="important">Eigenvalues &amp; eigenvectors</li>
+          <li class="important">Singular Value Decomposition (SVD)</li>
+          <li>QR decomposition, LU decomposition</li>
+          <li>Cholesky decomposition</li>
+          <li class="important">Positive definite / semi-definite matrices</li>
+          <li>Gram-Schmidt orthogonalization</li>
+          <li class="important">Matrix calculus — gradients, Jacobians, Hessians</li>
+          <li>Tensor products, Kronecker products</li>
+          <li>Spectral theorem, Perron-Frobenius</li>
+          <li>Low-rank approximations</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Multivariate Calculus</div>
+        <div class="topic-name">Optimization Foundations</div>
+        <ul class="algo-list">
+          <li class="important">Partial derivatives, gradients, directional derivatives</li>
+          <li class="important">Chain rule (critical for backprop)</li>
+          <li class="important">Taylor expansions (first, second order)</li>
+          <li class="important">Convexity, convex sets, convex functions</li>
+          <li>Lagrange multipliers, KKT conditions</li>
+          <li class="important">Saddle points, local vs global minima</li>
+          <li>Line integrals, change of variables</li>
+          <li>Implicit function theorem</li>
+          <li>Manifolds, tangent spaces (for differential geometry)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Probability Theory</div>
+        <div class="topic-name">Probabilistic Foundations</div>
+        <ul class="algo-list">
+          <li class="important">Probability spaces, sigma-algebras, measure theory basics</li>
+          <li class="important">Random variables — discrete and continuous</li>
+          <li class="important">PDFs, CDFs, PMFs</li>
+          <li class="important">Joint, marginal, conditional distributions</li>
+          <li class="important">Expectation, variance, covariance</li>
+          <li class="important">Moment generating functions, characteristic functions</li>
+          <li class="important">Law of large numbers, Central Limit Theorem</li>
+          <li>Markov's inequality, Chebyshev, Hoeffding</li>
+          <li>Convergence: in probability, almost surely, in distribution</li>
+          <li class="important">Concentration inequalities</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Key Distributions</div>
+        <div class="topic-name">Probability Distributions</div>
+        <ul class="algo-list">
+          <li class="important">Gaussian / Normal (and multivariate Gaussian)</li>
+          <li class="important">Bernoulli, Binomial, Multinomial</li>
+          <li class="important">Poisson, Exponential, Gamma</li>
+          <li>Beta, Dirichlet distributions</li>
+          <li>Student's t, Chi-squared, F distribution</li>
+          <li>Laplace, Cauchy, Pareto</li>
+          <li class="important">Wishart distribution</li>
+          <li>Von Mises, Truncated distributions</li>
+          <li class="important">Exponential family (unifying framework)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Information Theory</div>
+        <div class="topic-name">Shannon Theory</div>
+        <ul class="algo-list">
+          <li class="important">Entropy H(X), joint entropy H(X,Y)</li>
+          <li class="important">Conditional entropy H(X|Y)</li>
+          <li class="important">Mutual information I(X;Y)</li>
+          <li class="important">KL Divergence (relative entropy)</li>
+          <li class="important">Cross-entropy (loss function connection)</li>
+          <li>Jensen-Shannon divergence</li>
+          <li>Data processing inequality</li>
+          <li>Channel capacity</li>
+          <li class="important">Minimum description length (MDL)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Optimization Theory</div>
+        <div class="topic-name">Mathematical Optimization</div>
+        <ul class="algo-list">
+          <li class="important">Convex optimization (Boyd &amp; Vandenberghe)</li>
+          <li class="important">Gradient descent: convergence proofs</li>
+          <li>Subgradients, subdifferentials</li>
+          <li class="important">Duality: Lagrangian, strong/weak duality</li>
+          <li>Linear programming (simplex, interior point)</li>
+          <li>Quadratic programming</li>
+          <li>Semidefinite programming</li>
+          <li class="important">Stochastic optimization, online learning regret</li>
+          <li>Proximal operators, ADMM</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="topic-card">
-    <div class="topic-category">Multivariate Calculus</div>
-    <div class="topic-name">Optimization Foundations</div>
-    <ul class="algo-list">
-      <li class="important">Partial derivatives, gradients, directional derivatives</li>
-      <li class="important">Chain rule (critical for backprop)</li>
-      <li class="important">Taylor expansions (first, second order)</li>
-      <li class="important">Convexity, convex sets, convex functions</li>
-      <li>Lagrange multipliers, KKT conditions</li>
-      <li class="important">Saddle points, local vs global minima</li>
-      <li>Line integrals, change of variables</li>
-      <li>Implicit function theorem</li>
-      <li>Manifolds, tangent spaces (for differential geometry)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Probability Theory</div>
-    <div class="topic-name">Probabilistic Foundations</div>
-    <ul class="algo-list">
-      <li class="important">Probability spaces, sigma-algebras, measure theory basics</li>
-      <li class="important">Random variables — discrete and continuous</li>
-      <li class="important">PDFs, CDFs, PMFs</li>
-      <li class="important">Joint, marginal, conditional distributions</li>
-      <li class="important">Expectation, variance, covariance</li>
-      <li class="important">Moment generating functions, characteristic functions</li>
-      <li class="important">Law of large numbers, Central Limit Theorem</li>
-      <li>Markov's inequality, Chebyshev, Hoeffding</li>
-      <li>Convergence: in probability, almost surely, in distribution</li>
-      <li class="important">Concentration inequalities</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Key Distributions</div>
-    <div class="topic-name">Probability Distributions</div>
-    <ul class="algo-list">
-      <li class="important">Gaussian / Normal (and multivariate Gaussian)</li>
-      <li class="important">Bernoulli, Binomial, Multinomial</li>
-      <li class="important">Poisson, Exponential, Gamma</li>
-      <li>Beta, Dirichlet distributions</li>
-      <li>Student's t, Chi-squared, F distribution</li>
-      <li>Laplace, Cauchy, Pareto</li>
-      <li class="important">Wishart distribution</li>
-      <li>Von Mises, Truncated distributions</li>
-      <li class="important">Exponential family (unifying framework)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Information Theory</div>
-    <div class="topic-name">Shannon Theory</div>
-    <ul class="algo-list">
-      <li class="important">Entropy H(X), joint entropy H(X,Y)</li>
-      <li class="important">Conditional entropy H(X|Y)</li>
-      <li class="important">Mutual information I(X;Y)</li>
-      <li class="important">KL Divergence (relative entropy)</li>
-      <li class="important">Cross-entropy (loss function connection)</li>
-      <li>Jensen-Shannon divergence</li>
-      <li>Data processing inequality</li>
-      <li>Channel capacity</li>
-      <li class="important">Minimum description length (MDL)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Optimization Theory</div>
-    <div class="topic-name">Mathematical Optimization</div>
-    <ul class="algo-list">
-      <li class="important">Convex optimization (Boyd & Vandenberghe)</li>
-      <li class="important">Gradient descent: convergence proofs</li>
-      <li>Subgradients, subdifferentials</li>
-      <li class="important">Duality: Lagrangian, strong/weak duality</li>
-      <li>Linear programming (simplex, interior point)</li>
-      <li>Quadratic programming</li>
-      <li>Semidefinite programming</li>
-      <li class="important">Stochastic optimization, online learning regret</li>
-      <li>Proximal operators, ADMM</li>
-    </ul>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- ==================== PHASE 2: STATISTICS ==================== -->
-
+  <!-- PHASE 2: STATISTICS -->
   <div class="phase reveal" id="phase2">
     <div class="phase-header">
       <div class="phase-number">02</div>
       <div class="phase-meta">
         <div class="phase-level" style="color:var(--accent4)">Core · Undergraduate → Graduate</div>
-        <div class="phase-title">Statistics & Probabilistic Modeling</div>
+        <div class="phase-title">Statistics &amp; Probabilistic Modeling</div>
         <div class="phase-desc">
           Statistics is how we make inferences from data. Bayesian and frequentist frameworks both matter.
           Probabilistic graphical models are the backbone of structured prediction and generative modeling.
@@ -860,151 +810,140 @@ line-height: 1.9;
       </div>
     </div>
 
-```
-<div class="topic-grid cat-stats">
-  <div class="topic-card">
-    <div class="topic-category">Frequentist Statistics</div>
-    <div class="topic-name">Classical Inference</div>
-    <ul class="algo-list">
-      <li class="important">Maximum Likelihood Estimation (MLE)</li>
-      <li class="important">Method of Moments</li>
-      <li class="important">Sufficient statistics, Fisher information</li>
-      <li class="important">Cramér-Rao lower bound</li>
-      <li>Uniformly Minimum Variance Unbiased Estimators</li>
-      <li class="important">Hypothesis testing: null, alternative hypotheses</li>
-      <li class="important">p-values, significance, Type I/II errors</li>
-      <li class="important">Confidence intervals</li>
-      <li>Neyman-Pearson lemma</li>
-      <li>Likelihood ratio test</li>
-      <li>Multiple testing: Bonferroni, FDR, BH procedure</li>
-    </ul>
+    <div class="topic-grid cat-stats">
+      <div class="topic-card">
+        <div class="topic-category">Frequentist Statistics</div>
+        <div class="topic-name">Classical Inference</div>
+        <ul class="algo-list">
+          <li class="important">Maximum Likelihood Estimation (MLE)</li>
+          <li class="important">Method of Moments</li>
+          <li class="important">Sufficient statistics, Fisher information</li>
+          <li class="important">Cramér-Rao lower bound</li>
+          <li>Uniformly Minimum Variance Unbiased Estimators</li>
+          <li class="important">Hypothesis testing: null, alternative hypotheses</li>
+          <li class="important">p-values, significance, Type I/II errors</li>
+          <li class="important">Confidence intervals</li>
+          <li>Neyman-Pearson lemma</li>
+          <li>Likelihood ratio test</li>
+          <li>Multiple testing: Bonferroni, FDR, BH procedure</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Bayesian Statistics</div>
+        <div class="topic-name">Bayesian Inference</div>
+        <ul class="algo-list">
+          <li class="important">Bayes' theorem, prior, likelihood, posterior</li>
+          <li class="important">Conjugate priors</li>
+          <li class="important">Maximum A Posteriori (MAP) estimation</li>
+          <li class="important">Posterior predictive distribution</li>
+          <li>Bayesian model comparison, Bayes factors</li>
+          <li class="important">Hierarchical Bayesian models</li>
+          <li>Empirical Bayes</li>
+          <li class="important">Variational inference (ELBO, mean-field)</li>
+          <li>Expectation Propagation</li>
+          <li class="important">Laplace approximation</li>
+          <li>Bayesian neural networks</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Statistical Models</div>
+        <div class="topic-name">Regression &amp; GLMs</div>
+        <ul class="algo-list">
+          <li class="important">Simple &amp; Multiple Linear Regression</li>
+          <li class="important">Ordinary Least Squares (OLS) — geometric view</li>
+          <li class="important">Generalized Linear Models (GLMs)</li>
+          <li class="important">Logistic Regression (binomial GLM)</li>
+          <li>Poisson Regression</li>
+          <li>Probit Regression</li>
+          <li class="important">Ridge Regression (L2)</li>
+          <li class="important">Lasso (L1), Elastic Net</li>
+          <li>Weighted Least Squares</li>
+          <li>Generalized Additive Models (GAMs)</li>
+          <li>Quantile Regression</li>
+          <li>Robust Regression (Huber, RANSAC)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Markov Chain Monte Carlo</div>
+        <div class="topic-name">MCMC Methods</div>
+        <ul class="algo-list">
+          <li class="important">Markov chains: stationarity, mixing, ergodicity</li>
+          <li class="important">Metropolis-Hastings algorithm</li>
+          <li class="important">Gibbs sampling</li>
+          <li>Hamiltonian Monte Carlo (HMC)</li>
+          <li>No-U-Turn Sampler (NUTS)</li>
+          <li>Slice sampling</li>
+          <li>Sequential Monte Carlo (particle filters)</li>
+          <li>Importance sampling, self-normalized IS</li>
+          <li class="important">Annealed importance sampling</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Probabilistic Graphical Models</div>
+        <div class="topic-name">PGMs</div>
+        <ul class="algo-list">
+          <li class="important">Bayesian Networks (directed graphical models)</li>
+          <li class="important">d-separation, Markov blanket</li>
+          <li class="important">Markov Random Fields (undirected)</li>
+          <li class="important">Factor graphs</li>
+          <li class="important">Variable elimination</li>
+          <li class="important">Belief propagation (sum-product, max-product)</li>
+          <li>Loopy belief propagation</li>
+          <li class="important">Hidden Markov Models (HMMs)</li>
+          <li>Viterbi algorithm, Baum-Welch</li>
+          <li>Conditional Random Fields (CRFs)</li>
+          <li class="important">Latent Dirichlet Allocation (LDA)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Gaussian Processes</div>
+        <div class="topic-name">GP &amp; Kernel Methods</div>
+        <ul class="algo-list">
+          <li class="important">Gaussian process definition, kernel functions</li>
+          <li class="important">GP regression (Kriging)</li>
+          <li>GP classification</li>
+          <li class="important">Kernels: RBF, Matérn, periodic, rational quadratic</li>
+          <li>Kernel composition, product kernels</li>
+          <li class="important">Hyperparameter optimization (marginal likelihood)</li>
+          <li>Sparse GPs, inducing points</li>
+          <li>Deep GPs</li>
+          <li>GP-based Bayesian optimization</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Causal Inference</div>
+        <div class="topic-name">Causality</div>
+        <ul class="algo-list">
+          <li class="important">Structural Causal Models (SCMs)</li>
+          <li class="important">Do-calculus (Pearl's framework)</li>
+          <li class="important">DAGs, backdoor/frontdoor criteria</li>
+          <li>Counterfactuals</li>
+          <li class="important">Instrumental variables</li>
+          <li>Difference-in-differences</li>
+          <li>Regression discontinuity</li>
+          <li>Propensity score matching</li>
+          <li>DAGS and identifiability</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Survival &amp; Time Series</div>
+        <div class="topic-name">Temporal Modeling</div>
+        <ul class="algo-list">
+          <li>Survival analysis: hazard function, Kaplan-Meier</li>
+          <li>Cox proportional hazards</li>
+          <li class="important">AR, MA, ARMA, ARIMA models</li>
+          <li>GARCH models (volatility)</li>
+          <li class="important">State space models, Kalman filter</li>
+          <li>Seasonal decomposition (STL)</li>
+          <li>Spectral analysis, periodograms</li>
+          <li>Granger causality</li>
+          <li>Cointegration</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="topic-card">
-    <div class="topic-category">Bayesian Statistics</div>
-    <div class="topic-name">Bayesian Inference</div>
-    <ul class="algo-list">
-      <li class="important">Bayes' theorem, prior, likelihood, posterior</li>
-      <li class="important">Conjugate priors</li>
-      <li class="important">Maximum A Posteriori (MAP) estimation</li>
-      <li class="important">Posterior predictive distribution</li>
-      <li>Bayesian model comparison, Bayes factors</li>
-      <li class="important">Hierarchical Bayesian models</li>
-      <li>Empirical Bayes</li>
-      <li class="important">Variational inference (ELBO, mean-field)</li>
-      <li>Expectation Propagation</li>
-      <li class="important">Laplace approximation</li>
-      <li>Bayesian neural networks</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Statistical Models</div>
-    <div class="topic-name">Regression & GLMs</div>
-    <ul class="algo-list">
-      <li class="important">Simple & Multiple Linear Regression</li>
-      <li class="important">Ordinary Least Squares (OLS) — geometric view</li>
-      <li class="important">Generalized Linear Models (GLMs)</li>
-      <li class="important">Logistic Regression (binomial GLM)</li>
-      <li>Poisson Regression</li>
-      <li>Probit Regression</li>
-      <li class="important">Ridge Regression (L2)</li>
-      <li class="important">Lasso (L1), Elastic Net</li>
-      <li>Weighted Least Squares</li>
-      <li>Generalized Additive Models (GAMs)</li>
-      <li>Quantile Regression</li>
-      <li>Robust Regression (Huber, RANSAC)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Markov Chain Monte Carlo</div>
-    <div class="topic-name">MCMC Methods</div>
-    <ul class="algo-list">
-      <li class="important">Markov chains: stationarity, mixing, ergodicity</li>
-      <li class="important">Metropolis-Hastings algorithm</li>
-      <li class="important">Gibbs sampling</li>
-      <li>Hamiltonian Monte Carlo (HMC)</li>
-      <li>No-U-Turn Sampler (NUTS)</li>
-      <li>Slice sampling</li>
-      <li>Sequential Monte Carlo (particle filters)</li>
-      <li>Importance sampling, self-normalized IS</li>
-      <li class="important">Annealed importance sampling</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Probabilistic Graphical Models</div>
-    <div class="topic-name">PGMs</div>
-    <ul class="algo-list">
-      <li class="important">Bayesian Networks (directed graphical models)</li>
-      <li class="important">d-separation, Markov blanket</li>
-      <li class="important">Markov Random Fields (undirected)</li>
-      <li class="important">Factor graphs</li>
-      <li class="important">Variable elimination</li>
-      <li class="important">Belief propagation (sum-product, max-product)</li>
-      <li>Loopy belief propagation</li>
-      <li class="important">Hidden Markov Models (HMMs)</li>
-      <li>Viterbi algorithm, Baum-Welch</li>
-      <li>Conditional Random Fields (CRFs)</li>
-      <li class="important">Latent Dirichlet Allocation (LDA)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Gaussian Processes</div>
-    <div class="topic-name">GP & Kernel Methods</div>
-    <ul class="algo-list">
-      <li class="important">Gaussian process definition, kernel functions</li>
-      <li class="important">GP regression (Kriging)</li>
-      <li>GP classification</li>
-      <li class="important">Kernels: RBF, Matérn, periodic, rational quadratic</li>
-      <li>Kernel composition, product kernels</li>
-      <li class="important">Hyperparameter optimization (marginal likelihood)</li>
-      <li>Sparse GPs, inducing points</li>
-      <li>Deep GPs</li>
-      <li>GP-based Bayesian optimization</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Causal Inference</div>
-    <div class="topic-name">Causality</div>
-    <ul class="algo-list">
-      <li class="important">Structural Causal Models (SCMs)</li>
-      <li class="important">Do-calculus (Pearl's framework)</li>
-      <li class="important">DAGs, backdoor/frontdoor criteria</li>
-      <li>Counterfactuals</li>
-      <li class="important">Instrumental variables</li>
-      <li>Difference-in-differences</li>
-      <li>Regression discontinuity</li>
-      <li>Propensity score matching</li>
-      <li>DAGS and identifiability</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Survival & Time Series</div>
-    <div class="topic-name">Temporal Modeling</div>
-    <ul class="algo-list">
-      <li>Survival analysis: hazard function, Kaplan-Meier</li>
-      <li>Cox proportional hazards</li>
-      <li class="important">AR, MA, ARMA, ARIMA models</li>
-      <li>GARCH models (volatility)</li>
-      <li class="important">State space models, Kalman filter</li>
-      <li>Seasonal decomposition (STL)</li>
-      <li>Spectral analysis, periodograms</li>
-      <li>Granger causality</li>
-      <li>Cointegration</li>
-    </ul>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- ==================== PHASE 3: CLASSICAL ML ==================== -->
-
+  <!-- PHASE 3: CLASSICAL ML -->
   <div class="phase reveal" id="phase3">
     <div class="phase-header">
       <div class="phase-number">03</div>
@@ -1016,227 +955,212 @@ line-height: 1.9;
           and where each algorithm sits in the bias-variance landscape. Classical ML is still the workhorse
           of industry and the foundation for understanding why deep learning works.
         </div>
-        <div class="phase-duration">⏱ 4 months · Resources: ESL, PRML, Murphy ML, Hastie & Tibshirani</div>
+        <div class="phase-duration">⏱ 4 months · Resources: ESL, PRML, Murphy ML, Hastie &amp; Tibshirani</div>
       </div>
     </div>
 
-```
-<div class="topic-grid cat-ml">
-  <div class="topic-card">
-    <div class="topic-category">Supervised Learning — Linear</div>
-    <div class="topic-name">Linear Models</div>
-    <ul class="algo-list">
-      <li class="important">Linear Regression (all variants)</li>
-      <li class="important">Logistic Regression</li>
-      <li class="important">Linear Discriminant Analysis (LDA)</li>
-      <li>Quadratic Discriminant Analysis (QDA)</li>
-      <li class="important">Perceptron, Averaged Perceptron</li>
-      <li>Fisher's Linear Discriminant</li>
-      <li class="important">Support Vector Machines (SVM) — hard & soft margin</li>
-      <li class="important">SVM — kernel trick</li>
-      <li>ν-SVM, One-class SVM</li>
-      <li>Passive-Aggressive classifiers</li>
-    </ul>
+    <div class="topic-grid cat-ml">
+      <div class="topic-card">
+        <div class="topic-category">Supervised Learning — Linear</div>
+        <div class="topic-name">Linear Models</div>
+        <ul class="algo-list">
+          <li class="important">Linear Regression (all variants)</li>
+          <li class="important">Logistic Regression</li>
+          <li class="important">Linear Discriminant Analysis (LDA)</li>
+          <li>Quadratic Discriminant Analysis (QDA)</li>
+          <li class="important">Perceptron, Averaged Perceptron</li>
+          <li>Fisher's Linear Discriminant</li>
+          <li class="important">Support Vector Machines (SVM) — hard &amp; soft margin</li>
+          <li class="important">SVM — kernel trick</li>
+          <li>ν-SVM, One-class SVM</li>
+          <li>Passive-Aggressive classifiers</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Supervised Learning — Nonlinear</div>
+        <div class="topic-name">Tree-Based &amp; KNN</div>
+        <ul class="algo-list">
+          <li class="important">Decision Trees (CART, ID3, C4.5)</li>
+          <li class="important">k-Nearest Neighbors (kNN)</li>
+          <li>Radius-based neighbors</li>
+          <li class="important">Naive Bayes (Gaussian, Bernoulli, Multinomial)</li>
+          <li>Complement Naive Bayes</li>
+          <li class="important">Kernel Density Estimation (KDE)</li>
+          <li>Parzen window classifier</li>
+          <li>Rule-based classifiers (RIPPER)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Ensemble Methods</div>
+        <div class="topic-name">Ensemble Learning</div>
+        <ul class="algo-list">
+          <li class="important">Bagging (Bootstrap Aggregating)</li>
+          <li class="important">Random Forests</li>
+          <li>Extra Trees (Extremely Randomized)</li>
+          <li class="important">AdaBoost</li>
+          <li class="important">Gradient Boosting Machines (GBM)</li>
+          <li class="important">XGBoost</li>
+          <li class="important">LightGBM</li>
+          <li>CatBoost</li>
+          <li class="important">Stacking (meta-learning)</li>
+          <li>Blending</li>
+          <li class="important">Voting classifiers (hard/soft)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Unsupervised — Clustering</div>
+        <div class="topic-name">Clustering Algorithms</div>
+        <ul class="algo-list">
+          <li class="important">k-Means, k-Means++</li>
+          <li>k-Medoids (PAM)</li>
+          <li class="important">DBSCAN</li>
+          <li>HDBSCAN</li>
+          <li class="important">Hierarchical clustering (agglomerative/divisive)</li>
+          <li>OPTICS</li>
+          <li>Mean-shift clustering</li>
+          <li class="important">Gaussian Mixture Models (GMM) + EM algorithm</li>
+          <li>Spectral clustering</li>
+          <li>Affinity propagation</li>
+          <li>BIRCH, CURE</li>
+          <li>Fuzzy c-Means</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Dimensionality Reduction</div>
+        <div class="topic-name">Representation Learning</div>
+        <ul class="algo-list">
+          <li class="important">Principal Component Analysis (PCA)</li>
+          <li class="important">Kernel PCA</li>
+          <li>Independent Component Analysis (ICA)</li>
+          <li>Factor Analysis</li>
+          <li>Non-negative Matrix Factorization (NMF)</li>
+          <li class="important">t-SNE (van der Maaten)</li>
+          <li class="important">UMAP</li>
+          <li>Locally Linear Embedding (LLE)</li>
+          <li>ISOMAP</li>
+          <li>Laplacian Eigenmaps</li>
+          <li>Random Projections (Johnson-Lindenstrauss)</li>
+          <li>Sparse PCA</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Density Estimation</div>
+        <div class="topic-name">Generative Models (Classical)</div>
+        <ul class="algo-list">
+          <li class="important">Gaussian Mixture Models (GMM)</li>
+          <li class="important">Expectation-Maximization (EM) algorithm</li>
+          <li>Kernel Density Estimation</li>
+          <li>Parzen windows</li>
+          <li class="important">Hidden Markov Models</li>
+          <li>Restricted Boltzmann Machines (RBMs)</li>
+          <li>Deep Belief Networks (DBNs)</li>
+          <li>Helmholtz machines</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Learning Theory</div>
+        <div class="topic-name">Generalization &amp; Complexity</div>
+        <ul class="algo-list">
+          <li class="important">Bias-Variance decomposition</li>
+          <li class="important">PAC learning framework</li>
+          <li class="important">VC dimension</li>
+          <li class="important">Rademacher complexity</li>
+          <li>Growth function, Sauer's lemma</li>
+          <li class="important">Empirical Risk Minimization (ERM)</li>
+          <li>Structural Risk Minimization (SRM)</li>
+          <li class="important">Regularization theory</li>
+          <li class="important">Generalization bounds</li>
+          <li>Probably Approximately Correct (PAC-Bayes)</li>
+          <li>Online learning, regret bounds</li>
+          <li>No Free Lunch theorems</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Optimization for ML</div>
+        <div class="topic-name">Optimization Algorithms</div>
+        <ul class="algo-list">
+          <li class="important">Gradient Descent (batch)</li>
+          <li class="important">Stochastic Gradient Descent (SGD)</li>
+          <li class="important">Mini-batch SGD</li>
+          <li class="important">Momentum, Nesterov Momentum</li>
+          <li class="important">AdaGrad</li>
+          <li class="important">RMSProp</li>
+          <li class="important">Adam, AdamW</li>
+          <li>AdaDelta, Nadam, AMSGrad</li>
+          <li>L-BFGS (quasi-Newton)</li>
+          <li>Conjugate Gradient</li>
+          <li class="important">Learning rate schedules (cosine, warmup)</li>
+          <li>Lookahead optimizer, LAMB</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Anomaly Detection</div>
+        <div class="topic-name">Outlier Methods</div>
+        <ul class="algo-list">
+          <li class="important">Isolation Forest</li>
+          <li class="important">One-Class SVM</li>
+          <li class="important">Local Outlier Factor (LOF)</li>
+          <li>Elliptic Envelope</li>
+          <li>COPOD, ECOD</li>
+          <li>Autoencoder-based detection</li>
+          <li>ABOD (Angle-Based)</li>
+          <li>Statistical tests (Grubbs, ESD)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Semi-Supervised Learning</div>
+        <div class="topic-name">Label-Efficient Methods</div>
+        <ul class="algo-list">
+          <li class="important">Label propagation</li>
+          <li class="important">Label spreading</li>
+          <li>Self-training</li>
+          <li>Co-training</li>
+          <li class="important">Graph-based SSL</li>
+          <li>Transductive SVM (TSVM)</li>
+          <li class="important">Pseudo-labeling</li>
+          <li>Consistency regularization</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Feature Engineering</div>
+        <div class="topic-name">Feature Methods</div>
+        <ul class="algo-list">
+          <li class="important">Feature selection: filter, wrapper, embedded</li>
+          <li>Mutual information feature selection</li>
+          <li>Recursive Feature Elimination (RFE)</li>
+          <li class="important">SHAP values (feature importance)</li>
+          <li>Permutation importance</li>
+          <li class="important">Cross-validation (k-fold, stratified, LOO)</li>
+          <li>Nested cross-validation</li>
+          <li class="important">Hyperparameter tuning: grid, random, Bayesian</li>
+          <li>AutoML (TPOT, AutoSklearn)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Kernel Methods</div>
+        <div class="topic-name">Kernel Machines</div>
+        <ul class="algo-list">
+          <li class="important">Kernel trick, Mercer's theorem</li>
+          <li class="important">RBF / Gaussian kernel</li>
+          <li>Polynomial kernel</li>
+          <li>String kernels, tree kernels</li>
+          <li class="important">Kernel PCA</li>
+          <li>Kernel regression</li>
+          <li class="important">Random Fourier Features</li>
+          <li>Nyström approximation</li>
+          <li>Multiple Kernel Learning (MKL)</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="topic-card">
-    <div class="topic-category">Supervised Learning — Nonlinear</div>
-    <div class="topic-name">Tree-Based & KNN</div>
-    <ul class="algo-list">
-      <li class="important">Decision Trees (CART, ID3, C4.5)</li>
-      <li class="important">k-Nearest Neighbors (kNN)</li>
-      <li>Radius-based neighbors</li>
-      <li class="important">Naive Bayes (Gaussian, Bernoulli, Multinomial)</li>
-      <li>Complement Naive Bayes</li>
-      <li class="important">Kernel Density Estimation (KDE)</li>
-      <li>Parzen window classifier</li>
-      <li>Rule-based classifiers (RIPPER)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Ensemble Methods</div>
-    <div class="topic-name">Ensemble Learning</div>
-    <ul class="algo-list">
-      <li class="important">Bagging (Bootstrap Aggregating)</li>
-      <li class="important">Random Forests</li>
-      <li>Extra Trees (Extremely Randomized)</li>
-      <li class="important">AdaBoost</li>
-      <li class="important">Gradient Boosting Machines (GBM)</li>
-      <li class="important">XGBoost</li>
-      <li class="important">LightGBM</li>
-      <li>CatBoost</li>
-      <li class="important">Stacking (meta-learning)</li>
-      <li>Blending</li>
-      <li class="important">Voting classifiers (hard/soft)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Unsupervised — Clustering</div>
-    <div class="topic-name">Clustering Algorithms</div>
-    <ul class="algo-list">
-      <li class="important">k-Means, k-Means++</li>
-      <li>k-Medoids (PAM)</li>
-      <li class="important">DBSCAN</li>
-      <li>HDBSCAN</li>
-      <li class="important">Hierarchical clustering (agglomerative/divisive)</li>
-      <li>OPTICS</li>
-      <li>Mean-shift clustering</li>
-      <li class="important">Gaussian Mixture Models (GMM) + EM algorithm</li>
-      <li>Spectral clustering</li>
-      <li>Affinity propagation</li>
-      <li>BIRCH, CURE</li>
-      <li>Fuzzy c-Means</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Dimensionality Reduction</div>
-    <div class="topic-name">Representation Learning</div>
-    <ul class="algo-list">
-      <li class="important">Principal Component Analysis (PCA)</li>
-      <li class="important">Kernel PCA</li>
-      <li>Independent Component Analysis (ICA)</li>
-      <li>Factor Analysis</li>
-      <li>Non-negative Matrix Factorization (NMF)</li>
-      <li class="important">t-SNE (van der Maaten)</li>
-      <li class="important">UMAP</li>
-      <li>Locally Linear Embedding (LLE)</li>
-      <li>ISOMAP</li>
-      <li>Laplacian Eigenmaps</li>
-      <li>Random Projections (Johnson-Lindenstrauss)</li>
-      <li>Sparse PCA</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Density Estimation</div>
-    <div class="topic-name">Generative Models (Classical)</div>
-    <ul class="algo-list">
-      <li class="important">Gaussian Mixture Models (GMM)</li>
-      <li class="important">Expectation-Maximization (EM) algorithm</li>
-      <li>Kernel Density Estimation</li>
-      <li>Parzen windows</li>
-      <li class="important">Hidden Markov Models</li>
-      <li>Restricted Boltzmann Machines (RBMs)</li>
-      <li>Deep Belief Networks (DBNs)</li>
-      <li>Helmholtz machines</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Learning Theory</div>
-    <div class="topic-name">Generalization & Complexity</div>
-    <ul class="algo-list">
-      <li class="important">Bias-Variance decomposition</li>
-      <li class="important">PAC learning framework</li>
-      <li class="important">VC dimension</li>
-      <li class="important">Rademacher complexity</li>
-      <li>Growth function, Sauer's lemma</li>
-      <li class="important">Empirical Risk Minimization (ERM)</li>
-      <li>Structural Risk Minimization (SRM)</li>
-      <li class="important">Regularization theory</li>
-      <li class="important">Generalization bounds</li>
-      <li>Probably Approximately Correct (PAC-Bayes)</li>
-      <li>Online learning, regret bounds</li>
-      <li>No Free Lunch theorems</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Optimization for ML</div>
-    <div class="topic-name">Optimization Algorithms</div>
-    <ul class="algo-list">
-      <li class="important">Gradient Descent (batch)</li>
-      <li class="important">Stochastic Gradient Descent (SGD)</li>
-      <li class="important">Mini-batch SGD</li>
-      <li class="important">Momentum, Nesterov Momentum</li>
-      <li class="important">AdaGrad</li>
-      <li class="important">RMSProp</li>
-      <li class="important">Adam, AdamW</li>
-      <li>AdaDelta, Nadam, AMSGrad</li>
-      <li>L-BFGS (quasi-Newton)</li>
-      <li>Conjugate Gradient</li>
-      <li class="important">Learning rate schedules (cosine, warmup)</li>
-      <li>Lookahead optimizer, LAMB</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Anomaly Detection</div>
-    <div class="topic-name">Outlier Methods</div>
-    <ul class="algo-list">
-      <li class="important">Isolation Forest</li>
-      <li class="important">One-Class SVM</li>
-      <li class="important">Local Outlier Factor (LOF)</li>
-      <li>Elliptic Envelope</li>
-      <li>COPOD, ECOD</li>
-      <li>Autoencoder-based detection</li>
-      <li>ABOD (Angle-Based)</li>
-      <li>Statistical tests (Grubbs, ESD)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Semi-Supervised Learning</div>
-    <div class="topic-name">Label-Efficient Methods</div>
-    <ul class="algo-list">
-      <li class="important">Label propagation</li>
-      <li class="important">Label spreading</li>
-      <li>Self-training</li>
-      <li>Co-training</li>
-      <li class="important">Graph-based SSL</li>
-      <li>Transductive SVM (TSVM)</li>
-      <li class="important">Pseudo-labeling</li>
-      <li>Consistency regularization</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Feature Engineering</div>
-    <div class="topic-name">Feature Methods</div>
-    <ul class="algo-list">
-      <li class="important">Feature selection: filter, wrapper, embedded</li>
-      <li>Mutual information feature selection</li>
-      <li>Recursive Feature Elimination (RFE)</li>
-      <li class="important">SHAP values (feature importance)</li>
-      <li>Permutation importance</li>
-      <li class="important">Cross-validation (k-fold, stratified, LOO)</li>
-      <li>Nested cross-validation</li>
-      <li class="important">Hyperparameter tuning: grid, random, Bayesian</li>
-      <li>AutoML (TPOT, AutoSklearn)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Kernel Methods</div>
-    <div class="topic-name">Kernel Machines</div>
-    <ul class="algo-list">
-      <li class="important">Kernel trick, Mercer's theorem</li>
-      <li class="important">RBF / Gaussian kernel</li>
-      <li>Polynomial kernel</li>
-      <li>String kernels, tree kernels</li>
-      <li class="important">Kernel PCA</li>
-      <li>Kernel regression</li>
-      <li class="important">Random Fourier Features</li>
-      <li>Nyström approximation</li>
-      <li>Multiple Kernel Learning (MKL)</li>
-    </ul>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- ==================== PHASE 4: DEEP LEARNING ==================== -->
-
+  <!-- PHASE 4: DEEP LEARNING -->
   <div class="phase reveal" id="phase4">
     <div class="phase-header">
       <div class="phase-number">04</div>
       <div class="phase-meta">
         <div class="phase-level" style="color:var(--accent2)">Advanced · Graduate Level</div>
-        <div class="phase-title">Deep Learning & Neural Architectures</div>
+        <div class="phase-title">Deep Learning &amp; Neural Architectures</div>
         <div class="phase-desc">
           The engine of modern AI. Go from backpropagation to frontier architectures.
           Understand every architectural choice, every training trick, every normalization strategy from first principles.
@@ -1246,192 +1170,180 @@ line-height: 1.9;
       </div>
     </div>
 
-```
-<div class="topic-grid cat-dl">
-  <div class="topic-card">
-    <div class="topic-category">Neural Network Fundamentals</div>
-    <div class="topic-name">Foundations of NNs</div>
-    <ul class="algo-list">
-      <li class="important">Universal approximation theorems</li>
-      <li class="important">Feedforward networks (MLPs)</li>
-      <li class="important">Backpropagation (derivation from scratch)</li>
-      <li class="important">Computational graphs, automatic differentiation</li>
-      <li class="important">Activation functions: ReLU, GELU, Swish, SiLU, Mish</li>
-      <li>ELU, SELU, LeakyReLU, PReLU</li>
-      <li class="important">Weight initialization (Xavier, He, orthogonal)</li>
-      <li class="important">Batch Normalization (full derivation)</li>
-      <li>Layer Norm, Instance Norm, Group Norm</li>
-      <li class="important">Dropout, DropConnect, DropPath</li>
-      <li>Label smoothing, mixup, cutmix</li>
-    </ul>
+    <div class="topic-grid cat-dl">
+      <div class="topic-card">
+        <div class="topic-category">Neural Network Fundamentals</div>
+        <div class="topic-name">Foundations of NNs</div>
+        <ul class="algo-list">
+          <li class="important">Universal approximation theorems</li>
+          <li class="important">Feedforward networks (MLPs)</li>
+          <li class="important">Backpropagation (derivation from scratch)</li>
+          <li class="important">Computational graphs, automatic differentiation</li>
+          <li class="important">Activation functions: ReLU, GELU, Swish, SiLU, Mish</li>
+          <li>ELU, SELU, LeakyReLU, PReLU</li>
+          <li class="important">Weight initialization (Xavier, He, orthogonal)</li>
+          <li class="important">Batch Normalization (full derivation)</li>
+          <li>Layer Norm, Instance Norm, Group Norm</li>
+          <li class="important">Dropout, DropConnect, DropPath</li>
+          <li>Label smoothing, mixup, cutmix</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Convolutional Networks</div>
+        <div class="topic-name">CNN Architectures</div>
+        <ul class="algo-list">
+          <li class="important">Convolution operation, padding, stride, dilation</li>
+          <li class="important">Pooling: max, average, global</li>
+          <li class="important">LeNet-5 (LeCun 1998)</li>
+          <li class="important">AlexNet (2012)</li>
+          <li class="important">VGGNet (depth study)</li>
+          <li class="important">GoogLeNet / Inception (1×1 convolutions)</li>
+          <li class="important">ResNet (residual connections)</li>
+          <li>ResNeXt, Wide ResNet</li>
+          <li class="important">DenseNet</li>
+          <li class="important">MobileNet (depthwise separable convolutions)</li>
+          <li>EfficientNet (compound scaling)</li>
+          <li>ConvNeXt</li>
+          <li>Squeeze-and-Excitation Networks (SENet)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Recurrent Networks</div>
+        <div class="topic-name">Sequence Models</div>
+        <ul class="algo-list">
+          <li class="important">Vanilla RNN, BPTT</li>
+          <li class="important">Vanishing/exploding gradient problem</li>
+          <li class="important">LSTM (Long Short-Term Memory)</li>
+          <li class="important">GRU (Gated Recurrent Unit)</li>
+          <li>Bidirectional RNNs</li>
+          <li>Deep RNNs</li>
+          <li>Echo State Networks</li>
+          <li class="important">Seq2Seq with attention</li>
+          <li>Connectionist Temporal Classification (CTC)</li>
+          <li>Neural Turing Machines</li>
+          <li>Differentiable Neural Computer (DNC)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Attention &amp; Transformers</div>
+        <div class="topic-name">Transformer Architecture</div>
+        <ul class="algo-list">
+          <li class="important">Attention mechanism (Bahdanau, Luong)</li>
+          <li class="important">Self-attention, scaled dot-product attention</li>
+          <li class="important">Multi-head attention</li>
+          <li class="important">Positional encodings (sinusoidal, learned)</li>
+          <li class="important">Transformer encoder-decoder (Vaswani 2017)</li>
+          <li class="important">BERT, RoBERTa (masked LM)</li>
+          <li class="important">GPT series (causal LM)</li>
+          <li>T5, BART (encoder-decoder)</li>
+          <li class="important">Vision Transformer (ViT)</li>
+          <li>Swin Transformer (shifted windows)</li>
+          <li class="important">Flash Attention (I, II, III)</li>
+          <li>Relative positional encodings (RoPE, ALiBi)</li>
+          <li>Sparse attention, linear attention</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Generative Models</div>
+        <div class="topic-name">Generative Deep Learning</div>
+        <ul class="algo-list">
+          <li class="important">Variational Autoencoders (VAEs) — ELBO</li>
+          <li>β-VAE, VQ-VAE, VQ-VAE-2</li>
+          <li class="important">GANs (Goodfellow 2014)</li>
+          <li class="important">DCGAN, WGAN, WGAN-GP</li>
+          <li>StyleGAN (I, II, III)</li>
+          <li>Progressive GAN</li>
+          <li>CycleGAN, Pix2Pix</li>
+          <li class="important">Normalizing Flows (NICE, RealNVP, Glow)</li>
+          <li class="important">Denoising Diffusion Probabilistic Models (DDPM)</li>
+          <li class="important">Score-based models (Song 2020)</li>
+          <li class="important">Stable Diffusion (latent diffusion)</li>
+          <li>DALL-E, Imagen, FLUX</li>
+          <li>Consistency models</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Training at Scale</div>
+        <div class="topic-name">Large-Scale Training</div>
+        <ul class="algo-list">
+          <li class="important">Data parallelism, model parallelism</li>
+          <li class="important">Pipeline parallelism, tensor parallelism</li>
+          <li class="important">ZeRO optimizer stages (DeepSpeed)</li>
+          <li class="important">Mixed precision training (FP16, BF16)</li>
+          <li>Gradient checkpointing</li>
+          <li class="important">Gradient clipping</li>
+          <li class="important">Learning rate warmup + cosine decay</li>
+          <li>Gradient accumulation</li>
+          <li class="important">Pretraining vs fine-tuning</li>
+          <li class="important">LoRA, QLoRA (parameter-efficient fine-tuning)</li>
+          <li>Prefix tuning, prompt tuning, adapter tuning</li>
+          <li class="important">Scaling laws (Kaplan et al., Chinchilla)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Regularization &amp; Generalization</div>
+        <div class="topic-name">DL Regularization</div>
+        <ul class="algo-list">
+          <li class="important">L1, L2 weight decay</li>
+          <li class="important">Dropout (Srivastava 2014)</li>
+          <li>Concrete Dropout</li>
+          <li class="important">Data augmentation strategies</li>
+          <li>Stochastic Depth</li>
+          <li class="important">Early stopping</li>
+          <li>Ensemble methods in DL</li>
+          <li class="important">Double descent phenomenon</li>
+          <li>Implicit regularization of SGD</li>
+          <li>Sharpness-Aware Minimization (SAM)</li>
+          <li class="important">Neural Tangent Kernel (NTK) theory</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Graph Neural Networks</div>
+        <div class="topic-name">GNNs</div>
+        <ul class="algo-list">
+          <li class="important">Message passing framework</li>
+          <li class="important">Graph Convolutional Networks (GCN)</li>
+          <li class="important">GraphSAGE</li>
+          <li class="important">Graph Attention Networks (GAT)</li>
+          <li>GIN (Weisfeiler-Leman expressive power)</li>
+          <li>ChebNet</li>
+          <li>DiffPool (hierarchical pooling)</li>
+          <li>Graph Transformer</li>
+          <li class="important">Node classification, link prediction, graph classification</li>
+          <li>Heterogeneous graphs</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Self-Supervised Learning</div>
+        <div class="topic-name">SSL &amp; Contrastive Learning</div>
+        <ul class="algo-list">
+          <li class="important">Contrastive learning (SimCLR)</li>
+          <li class="important">Momentum Contrast (MoCo I, II)</li>
+          <li class="important">BYOL (no negative pairs)</li>
+          <li>SimSiam</li>
+          <li class="important">DINO (self-distillation)</li>
+          <li class="important">Masked Autoencoders (MAE)</li>
+          <li>BarlowTwins, VICReg</li>
+          <li class="important">CLIP (contrastive language-image)</li>
+          <li>SigLIP</li>
+          <li>Bootstrapping approaches</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight-box reveal">
+      <div class="highlight-box-title">⚡ Key Insight for Anthropic-Level Mastery</div>
+      <p>
+        Don't just implement Transformers — <span class="inline-accent">derive the attention mechanism from information retrieval principles</span>.
+        Understand why <span class="inline-orange">LayerNorm before attention</span> (Pre-LN) leads to more stable training than Post-LN.
+        Know the <span class="inline-cyan">exact compute/memory complexity</span> of each attention variant.
+        Be able to explain <span class="inline-purple">why residual connections</span> enable gradient flow and relate this to ensemble theory.
+        These are the questions that separate ML engineers from researchers.
+      </p>
+    </div>
   </div>
 
-  <div class="topic-card">
-    <div class="topic-category">Convolutional Networks</div>
-    <div class="topic-name">CNN Architectures</div>
-    <ul class="algo-list">
-      <li class="important">Convolution operation, padding, stride, dilation</li>
-      <li class="important">Pooling: max, average, global</li>
-      <li class="important">LeNet-5 (LeCun 1998)</li>
-      <li class="important">AlexNet (2012)</li>
-      <li class="important">VGGNet (depth study)</li>
-      <li class="important">GoogLeNet / Inception (1×1 convolutions)</li>
-      <li class="important">ResNet (residual connections)</li>
-      <li>ResNeXt, Wide ResNet</li>
-      <li class="important">DenseNet</li>
-      <li class="important">MobileNet (depthwise separable convolutions)</li>
-      <li>EfficientNet (compound scaling)</li>
-      <li>ConvNeXt</li>
-      <li>Squeeze-and-Excitation Networks (SENet)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Recurrent Networks</div>
-    <div class="topic-name">Sequence Models</div>
-    <ul class="algo-list">
-      <li class="important">Vanilla RNN, BPTT</li>
-      <li class="important">Vanishing/exploding gradient problem</li>
-      <li class="important">LSTM (Long Short-Term Memory)</li>
-      <li class="important">GRU (Gated Recurrent Unit)</li>
-      <li>Bidirectional RNNs</li>
-      <li>Deep RNNs</li>
-      <li>Echo State Networks</li>
-      <li class="important">Seq2Seq with attention</li>
-      <li>Connectionist Temporal Classification (CTC)</li>
-      <li>Neural Turing Machines</li>
-      <li>Differentiable Neural Computer (DNC)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Attention & Transformers</div>
-    <div class="topic-name">Transformer Architecture</div>
-    <ul class="algo-list">
-      <li class="important">Attention mechanism (Bahdanau, Luong)</li>
-      <li class="important">Self-attention, scaled dot-product attention</li>
-      <li class="important">Multi-head attention</li>
-      <li class="important">Positional encodings (sinusoidal, learned)</li>
-      <li class="important">Transformer encoder-decoder (Vaswani 2017)</li>
-      <li class="important">BERT, RoBERTa (masked LM)</li>
-      <li class="important">GPT series (causal LM)</li>
-      <li>T5, BART (encoder-decoder)</li>
-      <li class="important">Vision Transformer (ViT)</li>
-      <li>Swin Transformer (shifted windows)</li>
-      <li class="important">Flash Attention (I, II, III)</li>
-      <li>Relative positional encodings (RoPE, ALiBi)</li>
-      <li>Sparse attention, linear attention</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Generative Models</div>
-    <div class="topic-name">Generative Deep Learning</div>
-    <ul class="algo-list">
-      <li class="important">Variational Autoencoders (VAEs) — ELBO</li>
-      <li>β-VAE, VQ-VAE, VQ-VAE-2</li>
-      <li class="important">GANs (Goodfellow 2014)</li>
-      <li class="important">DCGAN, WGAN, WGAN-GP</li>
-      <li>StyleGAN (I, II, III)</li>
-      <li>Progressive GAN</li>
-      <li>CycleGAN, Pix2Pix</li>
-      <li class="important">Normalizing Flows (NICE, RealNVP, Glow)</li>
-      <li class="important">Denoising Diffusion Probabilistic Models (DDPM)</li>
-      <li class="important">Score-based models (Song 2020)</li>
-      <li class="important">Stable Diffusion (latent diffusion)</li>
-      <li>DALL-E, Imagen, FLUX</li>
-      <li>Consistency models</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Training at Scale</div>
-    <div class="topic-name">Large-Scale Training</div>
-    <ul class="algo-list">
-      <li class="important">Data parallelism, model parallelism</li>
-      <li class="important">Pipeline parallelism, tensor parallelism</li>
-      <li class="important">ZeRO optimizer stages (DeepSpeed)</li>
-      <li class="important">Mixed precision training (FP16, BF16)</li>
-      <li>Gradient checkpointing</li>
-      <li class="important">Gradient clipping</li>
-      <li class="important">Learning rate warmup + cosine decay</li>
-      <li>Gradient accumulation</li>
-      <li class="important">Pretraining vs fine-tuning</li>
-      <li class="important">LoRA, QLoRA (parameter-efficient fine-tuning)</li>
-      <li>Prefix tuning, prompt tuning, adapter tuning</li>
-      <li class="important">Scaling laws (Kaplan et al., Chinchilla)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Regularization & Generalization</div>
-    <div class="topic-name">DL Regularization</div>
-    <ul class="algo-list">
-      <li class="important">L1, L2 weight decay</li>
-      <li class="important">Dropout (Srivastava 2014)</li>
-      <li>Concrete Dropout</li>
-      <li class="important">Data augmentation strategies</li>
-      <li>Stochastic Depth</li>
-      <li class="important">Early stopping</li>
-      <li>Ensemble methods in DL</li>
-      <li class="important">Double descent phenomenon</li>
-      <li>Implicit regularization of SGD</li>
-      <li>Sharpness-Aware Minimization (SAM)</li>
-      <li class="important">Neural Tangent Kernel (NTK) theory</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Graph Neural Networks</div>
-    <div class="topic-name">GNNs</div>
-    <ul class="algo-list">
-      <li class="important">Message passing framework</li>
-      <li class="important">Graph Convolutional Networks (GCN)</li>
-      <li class="important">GraphSAGE</li>
-      <li class="important">Graph Attention Networks (GAT)</li>
-      <li>GIN (Weisfeiler-Leman expressive power)</li>
-      <li>ChebNet</li>
-      <li>DiffPool (hierarchical pooling)</li>
-      <li>Graph Transformer</li>
-      <li class="important">Node classification, link prediction, graph classification</li>
-      <li>Heterogeneous graphs</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Self-Supervised Learning</div>
-    <div class="topic-name">SSL & Contrastive Learning</div>
-    <ul class="algo-list">
-      <li class="important">Contrastive learning (SimCLR)</li>
-      <li class="important">Momentum Contrast (MoCo I, II)</li>
-      <li class="important">BYOL (no negative pairs)</li>
-      <li>SimSiam</li>
-      <li class="important">DINO (self-distillation)</li>
-      <li class="important">Masked Autoencoders (MAE)</li>
-      <li>BarlowTwins, VICReg</li>
-      <li class="important">CLIP (contrastive language-image)</li>
-      <li>SigLIP</li>
-      <li>Bootstrapping approaches</li>
-    </ul>
-  </div>
-</div>
-
-<div class="highlight-box reveal">
-  <div class="highlight-box-title">⚡ Key Insight for Anthropic-Level Mastery</div>
-  <p>
-    Don't just implement Transformers — <span class="inline-accent">derive the attention mechanism from information retrieval principles</span>.
-    Understand why <span class="inline-orange">LayerNorm before attention</span> (Pre-LN) leads to more stable training than Post-LN.
-    Know the <span class="inline-cyan">exact compute/memory complexity</span> of each attention variant.
-    Be able to explain <span class="inline-purple">why residual connections</span> enable gradient flow and relate this to ensemble theory.
-    These are the questions that separate ML engineers from researchers.
-  </p>
-</div>
-```
-
-  </div>
-
-  <!-- ==================== PHASE 5: COMPUTER VISION ==================== -->
-
+  <!-- PHASE 5: COMPUTER VISION -->
   <div class="phase reveal" id="phase5">
     <div class="phase-header">
       <div class="phase-number">05</div>
@@ -1442,330 +1354,308 @@ line-height: 1.9;
           From pixels to scene understanding. CV is where deep learning finds its most visible applications
           and where many of the most important architectural innovations originated. Multimodal AI begins here.
         </div>
-        <div class="phase-duration">⏱ 5 months · Resources: Szeliski, CS231n, Forsyth & Ponce</div>
+        <div class="phase-duration">⏱ 5 months · Resources: Szeliski, CS231n, Forsyth &amp; Ponce</div>
       </div>
     </div>
 
-```
-<div class="topic-grid cat-cv">
-  <div class="topic-card">
-    <div class="topic-category">Classical Computer Vision</div>
-    <div class="topic-name">Pre-Deep Learning CV</div>
-    <ul class="algo-list">
-      <li>Image formation, cameras, lenses</li>
-      <li class="important">Convolution filters, edge detection (Sobel, Canny)</li>
-      <li class="important">SIFT, SURF, ORB feature descriptors</li>
-      <li>HOG (Histogram of Oriented Gradients)</li>
-      <li>Optical flow (Lucas-Kanade, Horn-Schunck)</li>
-      <li>Image segmentation: watershed, GrabCut</li>
-      <li class="important">Hough transforms</li>
-      <li>Harris corner detector</li>
-      <li>Bag of Visual Words (BoVW)</li>
-      <li>Viola-Jones face detector</li>
-    </ul>
+    <div class="topic-grid cat-cv">
+      <div class="topic-card">
+        <div class="topic-category">Classical Computer Vision</div>
+        <div class="topic-name">Pre-Deep Learning CV</div>
+        <ul class="algo-list">
+          <li>Image formation, cameras, lenses</li>
+          <li class="important">Convolution filters, edge detection (Sobel, Canny)</li>
+          <li class="important">SIFT, SURF, ORB feature descriptors</li>
+          <li>HOG (Histogram of Oriented Gradients)</li>
+          <li>Optical flow (Lucas-Kanade, Horn-Schunck)</li>
+          <li>Image segmentation: watershed, GrabCut</li>
+          <li class="important">Hough transforms</li>
+          <li>Harris corner detector</li>
+          <li>Bag of Visual Words (BoVW)</li>
+          <li>Viola-Jones face detector</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Object Detection</div>
+        <div class="topic-name">Detection Architectures</div>
+        <ul class="algo-list">
+          <li class="important">RCNN, Fast RCNN, Faster RCNN</li>
+          <li class="important">Region Proposal Networks (RPN)</li>
+          <li class="important">SSD (Single Shot MultiBox Detector)</li>
+          <li class="important">YOLO (v1–v10)</li>
+          <li>YOLOv5, YOLOv8, YOLO-NAS</li>
+          <li class="important">RetinaNet (Focal Loss)</li>
+          <li class="important">Feature Pyramid Networks (FPN)</li>
+          <li>DETR (Detection Transformer)</li>
+          <li>Deformable DETR</li>
+          <li>Anchor-free detectors (FCOS, CenterNet)</li>
+          <li class="important">Non-maximum suppression (NMS), IoU</li>
+          <li>mAP metric</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Segmentation</div>
+        <div class="topic-name">Image Segmentation</div>
+        <ul class="algo-list">
+          <li class="important">Semantic segmentation</li>
+          <li class="important">Instance segmentation</li>
+          <li>Panoptic segmentation</li>
+          <li class="important">FCN (Fully Convolutional Network)</li>
+          <li class="important">U-Net (encoder-decoder with skip connections)</li>
+          <li>SegNet</li>
+          <li class="important">DeepLab (v1–v4), atrous convolution</li>
+          <li>Mask RCNN</li>
+          <li class="important">SAM (Segment Anything Model)</li>
+          <li>SAM2 (video segmentation)</li>
+          <li>Panoptic FPN</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">3D Vision</div>
+        <div class="topic-name">3D &amp; Geometry</div>
+        <ul class="algo-list">
+          <li>Camera models: pinhole, fisheye</li>
+          <li class="important">Homography, epipolar geometry</li>
+          <li class="important">Structure from Motion (SfM)</li>
+          <li class="important">Stereo vision, disparity estimation</li>
+          <li>SLAM (Simultaneous Localization and Mapping)</li>
+          <li>Depth estimation (monocular/stereo)</li>
+          <li class="important">Point cloud processing (PointNet, PointNet++)</li>
+          <li class="important">NeRF (Neural Radiance Fields)</li>
+          <li>Instant-NGP, Mip-NeRF</li>
+          <li class="important">3D Gaussian Splatting</li>
+          <li>Mesh-based representations</li>
+          <li>Occupancy networks, SDF</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Generative Vision</div>
+        <div class="topic-name">Image Synthesis</div>
+        <ul class="algo-list">
+          <li class="important">Diffusion models for images (DDPM, DDIM)</li>
+          <li class="important">Stable Diffusion (latent space diffusion)</li>
+          <li>DALL-E 1, 2, 3</li>
+          <li>Imagen, Parti, Muse</li>
+          <li class="important">ControlNet (conditioning)</li>
+          <li>DreamBooth, Textual Inversion</li>
+          <li class="important">IP-Adapter, LoRA for images</li>
+          <li>Flow matching (Lipman 2023)</li>
+          <li class="important">InstructPix2Pix</li>
+          <li>Video Diffusion Models</li>
+          <li>Sora-style video generation</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Multimodal Models</div>
+        <div class="topic-name">Vision-Language</div>
+        <ul class="algo-list">
+          <li class="important">CLIP (Radford 2021)</li>
+          <li class="important">ALIGN, BLIP, BLIP-2</li>
+          <li class="important">Flamingo (visual few-shot)</li>
+          <li>CogVLM, InternVL</li>
+          <li class="important">LLaVA (Large Language and Vision)</li>
+          <li>GPT-4V / GPT-4o vision</li>
+          <li class="important">Claude 3 multimodal</li>
+          <li>Gemini multimodal architecture</li>
+          <li>Visual question answering (VQA)</li>
+          <li>Image captioning</li>
+          <li>Referring expression comprehension</li>
+          <li class="important">Visual grounding</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Video Understanding</div>
+        <div class="topic-name">Video Models</div>
+        <ul class="algo-list">
+          <li class="important">3D convolutions (C3D, I3D)</li>
+          <li>Two-stream networks</li>
+          <li class="important">Video Transformers (TimeSformer, VideoMAE)</li>
+          <li>Action recognition</li>
+          <li>Temporal action detection</li>
+          <li>Video object detection</li>
+          <li>Optical flow estimation (RAFT)</li>
+          <li>Video generation (Sora, Lumiere)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Image Transformers</div>
+        <div class="topic-name">Vision Transformers</div>
+        <ul class="algo-list">
+          <li class="important">Vision Transformer (ViT) — all patch sizes</li>
+          <li class="important">DeiT (data-efficient ViT)</li>
+          <li class="important">Swin Transformer (hierarchical)</li>
+          <li>CvT, CoAtNet</li>
+          <li>BEiT (image BERT)</li>
+          <li class="important">MAE (Masked Autoencoders for vision)</li>
+          <li>DINO / DINOv2 self-supervised ViT</li>
+          <li>SAM's ViT backbone</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="topic-card">
-    <div class="topic-category">Object Detection</div>
-    <div class="topic-name">Detection Architectures</div>
-    <ul class="algo-list">
-      <li class="important">RCNN, Fast RCNN, Faster RCNN</li>
-      <li class="important">Region Proposal Networks (RPN)</li>
-      <li class="important">SSD (Single Shot MultiBox Detector)</li>
-      <li class="important">YOLO (v1–v10)</li>
-      <li>YOLOv5, YOLOv8, YOLO-NAS</li>
-      <li class="important">RetinaNet (Focal Loss)</li>
-      <li class="important">Feature Pyramid Networks (FPN)</li>
-      <li>DETR (Detection Transformer)</li>
-      <li>Deformable DETR</li>
-      <li>Anchor-free detectors (FCOS, CenterNet)</li>
-      <li class="important">Non-maximum suppression (NMS), IoU</li>
-      <li>mAP metric</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Segmentation</div>
-    <div class="topic-name">Image Segmentation</div>
-    <ul class="algo-list">
-      <li class="important">Semantic segmentation</li>
-      <li class="important">Instance segmentation</li>
-      <li>Panoptic segmentation</li>
-      <li class="important">FCN (Fully Convolutional Network)</li>
-      <li class="important">U-Net (encoder-decoder with skip connections)</li>
-      <li>SegNet</li>
-      <li class="important">DeepLab (v1–v4), atrous convolution</li>
-      <li>Mask RCNN</li>
-      <li class="important">SAM (Segment Anything Model)</li>
-      <li>SAM2 (video segmentation)</li>
-      <li>Panoptic FPN</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">3D Vision</div>
-    <div class="topic-name">3D & Geometry</div>
-    <ul class="algo-list">
-      <li>Camera models: pinhole, fisheye</li>
-      <li class="important">Homography, epipolar geometry</li>
-      <li class="important">Structure from Motion (SfM)</li>
-      <li class="important">Stereo vision, disparity estimation</li>
-      <li>SLAM (Simultaneous Localization and Mapping)</li>
-      <li>Depth estimation (monocular/stereo)</li>
-      <li class="important">Point cloud processing (PointNet, PointNet++)</li>
-      <li class="important">NeRF (Neural Radiance Fields)</li>
-      <li>Instant-NGP, Mip-NeRF</li>
-      <li class="important">3D Gaussian Splatting</li>
-      <li>Mesh-based representations</li>
-      <li>Occupancy networks, SDF</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Generative Vision</div>
-    <div class="topic-name">Image Synthesis</div>
-    <ul class="algo-list">
-      <li class="important">Diffusion models for images (DDPM, DDIM)</li>
-      <li class="important">Stable Diffusion (latent space diffusion)</li>
-      <li>DALL-E 1, 2, 3</li>
-      <li>Imagen, Parti, Muse</li>
-      <li class="important">ControlNet (conditioning)</li>
-      <li>DreamBooth, Textual Inversion</li>
-      <li class="important">IP-Adapter, LoRA for images</li>
-      <li>Flow matching (Lipman 2023)</li>
-      <li class="important">InstructPix2Pix</li>
-      <li>Video Diffusion Models</li>
-      <li>Sora-style video generation</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Multimodal Models</div>
-    <div class="topic-name">Vision-Language</div>
-    <ul class="algo-list">
-      <li class="important">CLIP (Radford 2021)</li>
-      <li class="important">ALIGN, BLIP, BLIP-2</li>
-      <li class="important">Flamingo (visual few-shot)</li>
-      <li>CogVLM, InternVL</li>
-      <li class="important">LLaVA (Large Language and Vision)</li>
-      <li>GPT-4V / GPT-4o vision</li>
-      <li class="important">Claude 3 multimodal</li>
-      <li>Gemini multimodal architecture</li>
-      <li>Visual question answering (VQA)</li>
-      <li>Image captioning</li>
-      <li>Referring expression comprehension</li>
-      <li class="important">Visual grounding</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Video Understanding</div>
-    <div class="topic-name">Video Models</div>
-    <ul class="algo-list">
-      <li class="important">3D convolutions (C3D, I3D)</li>
-      <li>Two-stream networks</li>
-      <li class="important">Video Transformers (TimeSformer, VideoMAE)</li>
-      <li>Action recognition</li>
-      <li>Temporal action detection</li>
-      <li>Video object detection</li>
-      <li>Optical flow estimation (RAFT)</li>
-      <li>Video generation (Sora, Lumiere)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Image Transformers</div>
-    <div class="topic-name">Vision Transformers</div>
-    <ul class="algo-list">
-      <li class="important">Vision Transformer (ViT) — all patch sizes</li>
-      <li class="important">DeiT (data-efficient ViT)</li>
-      <li class="important">Swin Transformer (hierarchical)</li>
-      <li>CvT, CoAtNet</li>
-      <li>BEiT (image BERT)</li>
-      <li class="important">MAE (Masked Autoencoders for vision)</li>
-      <li>DINO / DINOv2 self-supervised ViT</li>
-      <li>SAM's ViT backbone</li>
-    </ul>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- ==================== PHASE 6: ADVANCED ==================== -->
-
+  <!-- PHASE 6: ADVANCED -->
   <div class="phase reveal" id="phase6">
     <div class="phase-header">
       <div class="phase-number">06</div>
       <div class="phase-meta">
         <div class="phase-level" style="color:#10b981">Advanced · Graduate → Research</div>
-        <div class="phase-title">Advanced ML Topics & Systems</div>
+        <div class="phase-title">Advanced ML Topics &amp; Systems</div>
         <div class="phase-desc">
           Reinforcement learning, meta-learning, Bayesian deep learning, ML systems, interpretability,
           robustness, and fairness. These topics separate engineers from researchers.
         </div>
-        <div class="phase-duration">⏱ 6 months · Resources: Sutton & Barto, Finn meta-learning, Molnar Interpretable ML</div>
+        <div class="phase-duration">⏱ 6 months · Resources: Sutton &amp; Barto, Finn meta-learning, Molnar Interpretable ML</div>
       </div>
     </div>
 
-```
-<div class="topic-grid cat-adv">
-  <div class="topic-card">
-    <div class="topic-category">Reinforcement Learning</div>
-    <div class="topic-name">RL Foundations</div>
-    <ul class="algo-list">
-      <li class="important">Markov Decision Processes (MDPs)</li>
-      <li class="important">Bellman equations, value functions</li>
-      <li class="important">Dynamic Programming (policy/value iteration)</li>
-      <li class="important">Monte Carlo methods</li>
-      <li class="important">TD learning: TD(0), TD(λ)</li>
-      <li class="important">Q-learning (off-policy)</li>
-      <li class="important">SARSA (on-policy)</li>
-      <li class="important">Deep Q-Networks (DQN)</li>
-      <li>Double DQN, Dueling DQN, PER</li>
-      <li class="important">Policy Gradient methods, REINFORCE</li>
-      <li class="important">Actor-Critic (A2C, A3C)</li>
-      <li class="important">PPO (Proximal Policy Optimization)</li>
-      <li class="important">TRPO (Trust Region)</li>
-      <li class="important">SAC (Soft Actor-Critic)</li>
-      <li>TD3, DDPG</li>
-      <li>Model-based RL (Dyna, MBPO)</li>
-      <li>AlphaGo/AlphaZero/MuZero</li>
-    </ul>
+    <div class="topic-grid cat-adv">
+      <div class="topic-card">
+        <div class="topic-category">Reinforcement Learning</div>
+        <div class="topic-name">RL Foundations</div>
+        <ul class="algo-list">
+          <li class="important">Markov Decision Processes (MDPs)</li>
+          <li class="important">Bellman equations, value functions</li>
+          <li class="important">Dynamic Programming (policy/value iteration)</li>
+          <li class="important">Monte Carlo methods</li>
+          <li class="important">TD learning: TD(0), TD(λ)</li>
+          <li class="important">Q-learning (off-policy)</li>
+          <li class="important">SARSA (on-policy)</li>
+          <li class="important">Deep Q-Networks (DQN)</li>
+          <li>Double DQN, Dueling DQN, PER</li>
+          <li class="important">Policy Gradient methods, REINFORCE</li>
+          <li class="important">Actor-Critic (A2C, A3C)</li>
+          <li class="important">PPO (Proximal Policy Optimization)</li>
+          <li class="important">TRPO (Trust Region)</li>
+          <li class="important">SAC (Soft Actor-Critic)</li>
+          <li>TD3, DDPG</li>
+          <li>Model-based RL (Dyna, MBPO)</li>
+          <li>AlphaGo/AlphaZero/MuZero</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Meta-Learning</div>
+        <div class="topic-name">Learning to Learn</div>
+        <ul class="algo-list">
+          <li class="important">MAML (Model-Agnostic Meta-Learning)</li>
+          <li>FOMAML, Reptile</li>
+          <li class="important">Prototypical Networks</li>
+          <li>Matching Networks, Relation Networks</li>
+          <li class="important">Few-shot learning</li>
+          <li>N-way K-shot classification</li>
+          <li class="important">In-context learning (LLM meta-learning)</li>
+          <li>Hypernetworks</li>
+          <li>Neural Processes</li>
+          <li>Meta-SGD</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Interpretability</div>
+        <div class="topic-name">XAI Methods</div>
+        <ul class="algo-list">
+          <li class="important">LIME (Local Interpretable Model-agnostic)</li>
+          <li class="important">SHAP (SHapley Additive exPlanations)</li>
+          <li class="important">Integrated Gradients</li>
+          <li>Saliency maps, vanilla gradients</li>
+          <li>GradCAM, GradCAM++, EigenCAM</li>
+          <li class="important">Attention visualization</li>
+          <li class="important">Mechanistic interpretability</li>
+          <li>Circuit-level analysis (Anthropic)</li>
+          <li>Probing classifiers</li>
+          <li>Concept Bottleneck Models</li>
+          <li class="important">Sparse autoencoders for features (Anthropic)</li>
+          <li>Superposition hypothesis</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Robustness &amp; Adversarial</div>
+        <div class="topic-name">Adversarial ML</div>
+        <ul class="algo-list">
+          <li class="important">FGSM (Fast Gradient Sign Method)</li>
+          <li class="important">PGD attack (Madry)</li>
+          <li>CW attack, DeepFool</li>
+          <li class="important">Adversarial training</li>
+          <li>Certified defenses (randomized smoothing)</li>
+          <li>Distributionally Robust Optimization (DRO)</li>
+          <li class="important">Domain generalization</li>
+          <li>Data poisoning attacks</li>
+          <li>Backdoor / trojan attacks</li>
+          <li>Model extraction attacks</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">ML Systems</div>
+        <div class="topic-name">MLOps &amp; Infrastructure</div>
+        <ul class="algo-list">
+          <li class="important">CUDA programming, GPU memory hierarchy</li>
+          <li class="important">Kernel fusion, custom CUDA kernels</li>
+          <li class="important">Triton (OpenAI DSL)</li>
+          <li class="important">PyTorch internals, compilation</li>
+          <li>torch.compile, TorchScript</li>
+          <li class="important">Distributed training (NCCL, Gloo)</li>
+          <li>Model serving (TorchServe, Triton Inference)</li>
+          <li class="important">Quantization (INT8, INT4)</li>
+          <li class="important">Knowledge distillation</li>
+          <li>Pruning (structured/unstructured)</li>
+          <li>Neural Architecture Search (NAS)</li>
+          <li>Hardware-aware ML</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Bayesian Deep Learning</div>
+        <div class="topic-name">Uncertainty in NNs</div>
+        <ul class="algo-list">
+          <li class="important">Epistemic vs aleatoric uncertainty</li>
+          <li class="important">MC Dropout for uncertainty</li>
+          <li class="important">Deep Ensembles</li>
+          <li>Bayesian neural networks (MCMC)</li>
+          <li>Variational BNNs</li>
+          <li>Laplace approximation for NNs</li>
+          <li class="important">Conformal prediction</li>
+          <li>Calibration: temperature scaling, Platt scaling</li>
+          <li>Expected Calibration Error (ECE)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Online &amp; Continual Learning</div>
+        <div class="topic-name">Non-Stationary Learning</div>
+        <ul class="algo-list">
+          <li class="important">Catastrophic forgetting</li>
+          <li class="important">EWC (Elastic Weight Consolidation)</li>
+          <li>Progressive Neural Networks</li>
+          <li>PackNet, HAT (task-specific masks)</li>
+          <li>Replay methods (Experience Replay)</li>
+          <li>GDumb, DER (Dark Experience Replay)</li>
+          <li class="important">Multi-task learning</li>
+          <li>Task-incremental vs class-incremental</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Fairness &amp; Ethics</div>
+        <div class="topic-name">Responsible AI</div>
+        <ul class="algo-list">
+          <li class="important">Demographic parity, equalized odds</li>
+          <li>Calibration fairness</li>
+          <li>Individual vs group fairness</li>
+          <li class="important">Fairness-accuracy tradeoffs</li>
+          <li class="important">Bias in data and labels</li>
+          <li>Algorithmic auditing</li>
+          <li class="important">Differential privacy</li>
+          <li>Federated Learning (FedAvg, FedProx)</li>
+          <li>Secure multi-party computation</li>
+          <li class="important">Watermarking and model provenance</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="topic-card">
-    <div class="topic-category">Meta-Learning</div>
-    <div class="topic-name">Learning to Learn</div>
-    <ul class="algo-list">
-      <li class="important">MAML (Model-Agnostic Meta-Learning)</li>
-      <li>FOMAML, Reptile</li>
-      <li class="important">Prototypical Networks</li>
-      <li>Matching Networks, Relation Networks</li>
-      <li class="important">Few-shot learning</li>
-      <li>N-way K-shot classification</li>
-      <li class="important">In-context learning (LLM meta-learning)</li>
-      <li>Hypernetworks</li>
-      <li>Neural Processes</li>
-      <li>Meta-SGD</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Interpretability</div>
-    <div class="topic-name">XAI Methods</div>
-    <ul class="algo-list">
-      <li class="important">LIME (Local Interpretable Model-agnostic)</li>
-      <li class="important">SHAP (SHapley Additive exPlanations)</li>
-      <li class="important">Integrated Gradients</li>
-      <li>Saliency maps, vanilla gradients</li>
-      <li>GradCAM, GradCAM++, EigenCAM</li>
-      <li class="important">Attention visualization</li>
-      <li class="important">Mechanistic interpretability</li>
-      <li>Circuit-level analysis (Anthropic)</li>
-      <li>Probing classifiers</li>
-      <li>Concept Bottleneck Models</li>
-      <li class="important">Sparse autoencoders for features (Anthropic)</li>
-      <li>Superposition hypothesis</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Robustness & Adversarial</div>
-    <div class="topic-name">Adversarial ML</div>
-    <ul class="algo-list">
-      <li class="important">FGSM (Fast Gradient Sign Method)</li>
-      <li class="important">PGD attack (Madry)</li>
-      <li>CW attack, DeepFool</li>
-      <li class="important">Adversarial training</li>
-      <li>Certified defenses (randomized smoothing)</li>
-      <li>Distributionally Robust Optimization (DRO)</li>
-      <li class="important">Domain generalization</li>
-      <li>Data poisoning attacks</li>
-      <li>Backdoor / trojan attacks</li>
-      <li>Model extraction attacks</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">ML Systems</div>
-    <div class="topic-name">MLOps & Infrastructure</div>
-    <ul class="algo-list">
-      <li class="important">CUDA programming, GPU memory hierarchy</li>
-      <li class="important">Kernel fusion, custom CUDA kernels</li>
-      <li class="important">Triton (OpenAI DSL)</li>
-      <li class="important">PyTorch internals, compilation</li>
-      <li>torch.compile, TorchScript</li>
-      <li class="important">Distributed training (NCCL, Gloo)</li>
-      <li>Model serving (TorchServe, Triton Inference)</li>
-      <li class="important">Quantization (INT8, INT4)</li>
-      <li class="important">Knowledge distillation</li>
-      <li>Pruning (structured/unstructured)</li>
-      <li>Neural Architecture Search (NAS)</li>
-      <li>Hardware-aware ML</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Bayesian Deep Learning</div>
-    <div class="topic-name">Uncertainty in NNs</div>
-    <ul class="algo-list">
-      <li class="important">Epistemic vs aleatoric uncertainty</li>
-      <li class="important">MC Dropout for uncertainty</li>
-      <li class="important">Deep Ensembles</li>
-      <li>Bayesian neural networks (MCMC)</li>
-      <li>Variational BNNs</li>
-      <li>Laplace approximation for NNs</li>
-      <li class="important">Conformal prediction</li>
-      <li>Calibration: temperature scaling, Platt scaling</li>
-      <li>Expected Calibration Error (ECE)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Online & Continual Learning</div>
-    <div class="topic-name">Non-Stationary Learning</div>
-    <ul class="algo-list">
-      <li class="important">Catastrophic forgetting</li>
-      <li class="important">EWC (Elastic Weight Consolidation)</li>
-      <li>Progressive Neural Networks</li>
-      <li>PackNet, HAT (task-specific masks)</li>
-      <li>Replay methods (Experience Replay)</li>
-      <li>GDumb, DER (Dark Experience Replay)</li>
-      <li class="important">Multi-task learning</li>
-      <li>Task-incremental vs class-incremental</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Fairness & Ethics</div>
-    <div class="topic-name">Responsible AI</div>
-    <ul class="algo-list">
-      <li class="important">Demographic parity, equalized odds</li>
-      <li>Calibration fairness</li>
-      <li>Individual vs group fairness</li>
-      <li class="important">Fairness-accuracy tradeoffs</li>
-      <li class="important">Bias in data and labels</li>
-      <li>Algorithmic auditing</li>
-      <li class="important">Differential privacy</li>
-      <li>Federated Learning (FedAvg, FedProx)</li>
-      <li>Secure multi-party computation</li>
-      <li class="important">Watermarking and model provenance</li>
-    </ul>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- ==================== PHASE 7: RESEARCH FRONTIER ==================== -->
-
+  <!-- PHASE 7: RESEARCH FRONTIER -->
   <div class="phase reveal" id="phase7">
     <div class="phase-header">
       <div class="phase-number">07</div>
       <div class="phase-meta">
         <div class="phase-level" style="color:#f59e0b">Research Frontier · PhD Level</div>
-        <div class="phase-title">LLMs, Alignment & Research Frontier</div>
+        <div class="phase-title">LLMs, Alignment &amp; Research Frontier</div>
         <div class="phase-desc">
           The cutting edge where research happens. This is Anthropic's domain —
           scaling, alignment, constitutional AI, mechanistic interpretability, and the science of building safe powerful AI systems.
@@ -1775,156 +1665,145 @@ line-height: 1.9;
       </div>
     </div>
 
-```
-<div class="topic-grid cat-research">
-  <div class="topic-card">
-    <div class="topic-category">Large Language Models</div>
-    <div class="topic-name">LLM Architecture & Training</div>
-    <ul class="algo-list">
-      <li class="important">Autoregressive language modeling (next-token prediction)</li>
-      <li class="important">GPT architecture family (GPT-1 → GPT-4)</li>
-      <li class="important">Claude architecture insights</li>
-      <li class="important">Llama, Mistral, Falcon, Qwen</li>
-      <li class="important">Mixture of Experts (MoE) — Mixtral, GPT-4</li>
-      <li>Sparse MoE routing (top-k, expert choice)</li>
-      <li class="important">Context length extension (RoPE scaling, LongFormer)</li>
-      <li>Ring attention, streaming LLM</li>
-      <li class="important">Speculative decoding</li>
-      <li>Grouped-query attention (GQA), MQA</li>
-      <li class="important">KV cache optimization</li>
-      <li>Mamba (SSM-based, linear RNNs)</li>
-      <li>RWKV, RetNet, Griffin</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">RLHF & Alignment</div>
-    <div class="topic-name">Human Feedback & Alignment</div>
-    <ul class="algo-list">
-      <li class="important">Instruction fine-tuning (FLAN, InstructGPT)</li>
-      <li class="important">RLHF: reward model + PPO training</li>
-      <li class="important">Constitutional AI (Anthropic)</li>
-      <li class="important">DPO (Direct Preference Optimization)</li>
-      <li>IPO, KTO, SimPO</li>
-      <li class="important">Reward hacking, specification gaming</li>
-      <li class="important">Scalable oversight</li>
-      <li>Debate (Anthropic/OpenAI)</li>
-      <li>Iterated amplification</li>
-      <li class="important">Red-teaming and safety evaluation</li>
-      <li>Weak-to-strong generalization</li>
-      <li class="important">Superalignment concepts</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Mechanistic Interpretability</div>
-    <div class="topic-name">Understanding NNs (Anthropic Focus)</div>
-    <ul class="algo-list">
-      <li class="important">Circuits framework (Olah et al.)</li>
-      <li class="important">Superposition hypothesis</li>
-      <li class="important">Sparse autoencoders (SAEs) for LLMs</li>
-      <li class="important">Feature visualization</li>
-      <li>Induction heads, copying heads</li>
-      <li class="important">Indirect Object Identification circuit</li>
-      <li>Attention pattern analysis</li>
-      <li class="important">Activation patching / causal tracing</li>
-      <li>Logit lens, tuned lens</li>
-      <li class="important">Representation engineering</li>
-      <li>Steering vectors</li>
-      <li>Polysemanticity analysis</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Scaling & Emergent Behavior</div>
-    <div class="topic-name">Scaling Science</div>
-    <ul class="algo-list">
-      <li class="important">Neural scaling laws (Kaplan 2020)</li>
-      <li class="important">Chinchilla optimal compute</li>
-      <li class="important">Emergent abilities (Wei 2022)</li>
-      <li>Scaling laws for alignment</li>
-      <li class="important">Training compute-optimal models</li>
-      <li>Power laws in LLM loss</li>
-      <li>Grokking phenomenon</li>
-      <li class="important">Phase transitions in neural networks</li>
-      <li>Memorization vs generalization at scale</li>
-      <li>Data scaling laws</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Reasoning & Agents</div>
-    <div class="topic-name">Reasoning in LLMs</div>
-    <ul class="algo-list">
-      <li class="important">Chain-of-Thought prompting (CoT)</li>
-      <li class="important">Tree of Thoughts, Graph of Thoughts</li>
-      <li class="important">ReAct (reasoning + acting)</li>
-      <li class="important">Toolformer, function calling</li>
-      <li class="important">LLM agents (AutoGPT, AgentGPT)</li>
-      <li>Self-consistency decoding</li>
-      <li class="important">Program synthesis (Codex, AlphaCode)</li>
-      <li>Process reward models vs outcome rewards</li>
-      <li class="important">OpenAI o1-style test-time compute</li>
-      <li>AlphaGeometry, AlphaProof</li>
-      <li>Verifiers and validators</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Multimodal Frontier</div>
-    <div class="topic-name">Frontier Multimodal Models</div>
-    <ul class="algo-list">
-      <li class="important">GPT-4o (omni: speech, vision, text)</li>
-      <li class="important">Gemini 1.5 Pro (long context multimodal)</li>
-      <li class="important">Claude 3 / Claude 3.5 / Claude 4 vision</li>
-      <li>Any-to-any models (Unified-IO)</li>
-      <li class="important">Video understanding at scale (Sora)</li>
-      <li>Audio-language models (Whisper+LLM)</li>
-      <li>Embodied multimodal agents</li>
-      <li class="important">World models (Genie, DreamerV3)</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Research Process</div>
-    <div class="topic-name">Becoming a Researcher</div>
-    <ul class="algo-list">
-      <li class="important">How to read papers (Karpathy method)</li>
-      <li class="important">Paper reproduction workflow</li>
-      <li class="important">Ablation study design</li>
-      <li class="important">Scientific hypothesis formation</li>
-      <li>Statistical significance in ML experiments</li>
-      <li class="important">Writing for NeurIPS/ICML/ICLR</li>
-      <li>Peer review process</li>
-      <li class="important">Open-source contributions (HuggingFace, etc.)</li>
-      <li>ArXiv preprint strategy</li>
-      <li class="important">Building a research portfolio</li>
-    </ul>
-  </div>
-
-  <div class="topic-card">
-    <div class="topic-category">Theoretical Frontiers</div>
-    <div class="topic-name">Deep Theoretical Topics</div>
-    <ul class="algo-list">
-      <li class="important">Information bottleneck theory</li>
-      <li>Minimum description length for NNs</li>
-      <li class="important">Lottery ticket hypothesis</li>
-      <li class="important">Loss landscape geometry</li>
-      <li>Flatness vs sharpness of minima (Hochreiter, SAM)</li>
-      <li class="important">Mean field theory of NNs</li>
-      <li>Random matrix theory in DL</li>
-      <li>Optimal brain damage / surgeon pruning</li>
-      <li class="important">Kolmogorov complexity connections</li>
-      <li>Solomonoff induction</li>
-    </ul>
-  </div>
-</div>
-```
-
+    <div class="topic-grid cat-research">
+      <div class="topic-card">
+        <div class="topic-category">Large Language Models</div>
+        <div class="topic-name">LLM Architecture &amp; Training</div>
+        <ul class="algo-list">
+          <li class="important">Autoregressive language modeling (next-token prediction)</li>
+          <li class="important">GPT architecture family (GPT-1 → GPT-4)</li>
+          <li class="important">Claude architecture insights</li>
+          <li class="important">Llama, Mistral, Falcon, Qwen</li>
+          <li class="important">Mixture of Experts (MoE) — Mixtral, GPT-4</li>
+          <li>Sparse MoE routing (top-k, expert choice)</li>
+          <li class="important">Context length extension (RoPE scaling, LongFormer)</li>
+          <li>Ring attention, streaming LLM</li>
+          <li class="important">Speculative decoding</li>
+          <li>Grouped-query attention (GQA), MQA</li>
+          <li class="important">KV cache optimization</li>
+          <li>Mamba (SSM-based, linear RNNs)</li>
+          <li>RWKV, RetNet, Griffin</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">RLHF &amp; Alignment</div>
+        <div class="topic-name">Human Feedback &amp; Alignment</div>
+        <ul class="algo-list">
+          <li class="important">Instruction fine-tuning (FLAN, InstructGPT)</li>
+          <li class="important">RLHF: reward model + PPO training</li>
+          <li class="important">Constitutional AI (Anthropic)</li>
+          <li class="important">DPO (Direct Preference Optimization)</li>
+          <li>IPO, KTO, SimPO</li>
+          <li class="important">Reward hacking, specification gaming</li>
+          <li class="important">Scalable oversight</li>
+          <li>Debate (Anthropic/OpenAI)</li>
+          <li>Iterated amplification</li>
+          <li class="important">Red-teaming and safety evaluation</li>
+          <li>Weak-to-strong generalization</li>
+          <li class="important">Superalignment concepts</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Mechanistic Interpretability</div>
+        <div class="topic-name">Understanding NNs (Anthropic Focus)</div>
+        <ul class="algo-list">
+          <li class="important">Circuits framework (Olah et al.)</li>
+          <li class="important">Superposition hypothesis</li>
+          <li class="important">Sparse autoencoders (SAEs) for LLMs</li>
+          <li class="important">Feature visualization</li>
+          <li>Induction heads, copying heads</li>
+          <li class="important">Indirect Object Identification circuit</li>
+          <li>Attention pattern analysis</li>
+          <li class="important">Activation patching / causal tracing</li>
+          <li>Logit lens, tuned lens</li>
+          <li class="important">Representation engineering</li>
+          <li>Steering vectors</li>
+          <li>Polysemanticity analysis</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Scaling &amp; Emergent Behavior</div>
+        <div class="topic-name">Scaling Science</div>
+        <ul class="algo-list">
+          <li class="important">Neural scaling laws (Kaplan 2020)</li>
+          <li class="important">Chinchilla optimal compute</li>
+          <li class="important">Emergent abilities (Wei 2022)</li>
+          <li>Scaling laws for alignment</li>
+          <li class="important">Training compute-optimal models</li>
+          <li>Power laws in LLM loss</li>
+          <li>Grokking phenomenon</li>
+          <li class="important">Phase transitions in neural networks</li>
+          <li>Memorization vs generalization at scale</li>
+          <li>Data scaling laws</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Reasoning &amp; Agents</div>
+        <div class="topic-name">Reasoning in LLMs</div>
+        <ul class="algo-list">
+          <li class="important">Chain-of-Thought prompting (CoT)</li>
+          <li class="important">Tree of Thoughts, Graph of Thoughts</li>
+          <li class="important">ReAct (reasoning + acting)</li>
+          <li class="important">Toolformer, function calling</li>
+          <li class="important">LLM agents (AutoGPT, AgentGPT)</li>
+          <li>Self-consistency decoding</li>
+          <li class="important">Program synthesis (Codex, AlphaCode)</li>
+          <li>Process reward models vs outcome rewards</li>
+          <li class="important">OpenAI o1-style test-time compute</li>
+          <li>AlphaGeometry, AlphaProof</li>
+          <li>Verifiers and validators</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Multimodal Frontier</div>
+        <div class="topic-name">Frontier Multimodal Models</div>
+        <ul class="algo-list">
+          <li class="important">GPT-4o (omni: speech, vision, text)</li>
+          <li class="important">Gemini 1.5 Pro (long context multimodal)</li>
+          <li class="important">Claude 3 / Claude 3.5 / Claude 4 vision</li>
+          <li>Any-to-any models (Unified-IO)</li>
+          <li class="important">Video understanding at scale (Sora)</li>
+          <li>Audio-language models (Whisper+LLM)</li>
+          <li>Embodied multimodal agents</li>
+          <li class="important">World models (Genie, DreamerV3)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Research Process</div>
+        <div class="topic-name">Becoming a Researcher</div>
+        <ul class="algo-list">
+          <li class="important">How to read papers (Karpathy method)</li>
+          <li class="important">Paper reproduction workflow</li>
+          <li class="important">Ablation study design</li>
+          <li class="important">Scientific hypothesis formation</li>
+          <li>Statistical significance in ML experiments</li>
+          <li class="important">Writing for NeurIPS/ICML/ICLR</li>
+          <li>Peer review process</li>
+          <li class="important">Open-source contributions (HuggingFace, etc.)</li>
+          <li>ArXiv preprint strategy</li>
+          <li class="important">Building a research portfolio</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="topic-category">Theoretical Frontiers</div>
+        <div class="topic-name">Deep Theoretical Topics</div>
+        <ul class="algo-list">
+          <li class="important">Information bottleneck theory</li>
+          <li>Minimum description length for NNs</li>
+          <li class="important">Lottery ticket hypothesis</li>
+          <li class="important">Loss landscape geometry</li>
+          <li>Flatness vs sharpness of minima (Hochreiter, SAM)</li>
+          <li class="important">Mean field theory of NNs</li>
+          <li>Random matrix theory in DL</li>
+          <li>Optimal brain damage / surgeon pruning</li>
+          <li class="important">Kolmogorov complexity connections</li>
+          <li>Solomonoff induction</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <!-- HIRING BAR -->
-
   <div class="section-divider reveal">
     <div class="divider-line"></div>
     <span class="divider-label">The Anthropic Hiring Bar</span>
@@ -1965,83 +1844,80 @@ line-height: 1.9;
       </div>
     </div>
 
-```
-<div class="full-card" style="border:1px solid var(--border); margin-top:1.5px;">
-  <div class="full-card-title">Core Papers to Read & Reproduce <span>// the canon</span></div>
-  <div class="pills">
-    <span class="pill highlight">Attention Is All You Need (2017)</span>
-    <span class="pill highlight">BERT (2018)</span>
-    <span class="pill highlight">GPT-3 (2020)</span>
-    <span class="pill highlight">Scaling Laws (Kaplan 2020)</span>
-    <span class="pill highlight">Constitutional AI (Anthropic)</span>
-    <span class="pill highlight">InstructGPT (2022)</span>
-    <span class="pill highlight">Chinchilla (2022)</span>
-    <span class="pill highlight">RLHF (Christiano 2017)</span>
-    <span class="pill highlight">DPO (2023)</span>
-    <span class="pill highlight">FlashAttention I & II</span>
-    <span class="pill">ResNet (2015)</span>
-    <span class="pill">GAN (2014)</span>
-    <span class="pill">VAE (2013)</span>
-    <span class="pill">DDPM (2020)</span>
-    <span class="pill">ViT (2020)</span>
-    <span class="pill">CLIP (2021)</span>
-    <span class="pill">MAE (2021)</span>
-    <span class="pill">DINO (2021)</span>
-    <span class="pill">LLaMA (2023)</span>
-    <span class="pill">Mistral (2023)</span>
-    <span class="pill">Mixture of Experts (2022)</span>
-    <span class="pill">Mamba (2023)</span>
-    <span class="pill">Chain of Thought (2022)</span>
-    <span class="pill">SAM (2023)</span>
-    <span class="pill">AlphaFold2 (2021)</span>
-    <span class="pill">AlphaGo (2016)</span>
-    <span class="pill">World Models (Ha & Schmidhuber)</span>
-    <span class="pill">Circuits (Olah 2020)</span>
-    <span class="pill">Superposition (Elhage 2022)</span>
-    <span class="pill">Toy Models of Superposition</span>
-    <span class="pill">Sparse Autoencoders (Anthropic 2023)</span>
-    <span class="pill">Emergent Abilities (Wei 2022)</span>
-    <span class="pill">Grokking (Power 2022)</span>
-    <span class="pill">Deep Double Descent (Nakkiran)</span>
-    <span class="pill">Neural Tangent Kernel</span>
-    <span class="pill">Proximal Policy Optimization</span>
-    <span class="pill">SAC (Haarnoja 2018)</span>
-    <span class="pill">LoRA (2021)</span>
-    <span class="pill">QLoRA (2023)</span>
-    <span class="pill">PEFT Survey</span>
-    <span class="pill">AlphaCode (2022)</span>
-    <span class="pill">Codex (2021)</span>
-  </div>
-</div>
+    <div class="full-card" style="border:1px solid var(--border); margin-top:1.5px;">
+      <div class="full-card-title">Core Papers to Read &amp; Reproduce <span>// the canon</span></div>
+      <div class="pills">
+        <span class="pill highlight">Attention Is All You Need (2017)</span>
+        <span class="pill highlight">BERT (2018)</span>
+        <span class="pill highlight">GPT-3 (2020)</span>
+        <span class="pill highlight">Scaling Laws (Kaplan 2020)</span>
+        <span class="pill highlight">Constitutional AI (Anthropic)</span>
+        <span class="pill highlight">InstructGPT (2022)</span>
+        <span class="pill highlight">Chinchilla (2022)</span>
+        <span class="pill highlight">RLHF (Christiano 2017)</span>
+        <span class="pill highlight">DPO (2023)</span>
+        <span class="pill highlight">FlashAttention I &amp; II</span>
+        <span class="pill">ResNet (2015)</span>
+        <span class="pill">GAN (2014)</span>
+        <span class="pill">VAE (2013)</span>
+        <span class="pill">DDPM (2020)</span>
+        <span class="pill">ViT (2020)</span>
+        <span class="pill">CLIP (2021)</span>
+        <span class="pill">MAE (2021)</span>
+        <span class="pill">DINO (2021)</span>
+        <span class="pill">LLaMA (2023)</span>
+        <span class="pill">Mistral (2023)</span>
+        <span class="pill">Mixture of Experts (2022)</span>
+        <span class="pill">Mamba (2023)</span>
+        <span class="pill">Chain of Thought (2022)</span>
+        <span class="pill">SAM (2023)</span>
+        <span class="pill">AlphaFold2 (2021)</span>
+        <span class="pill">AlphaGo (2016)</span>
+        <span class="pill">World Models (Ha &amp; Schmidhuber)</span>
+        <span class="pill">Circuits (Olah 2020)</span>
+        <span class="pill">Superposition (Elhage 2022)</span>
+        <span class="pill">Toy Models of Superposition</span>
+        <span class="pill">Sparse Autoencoders (Anthropic 2023)</span>
+        <span class="pill">Emergent Abilities (Wei 2022)</span>
+        <span class="pill">Grokking (Power 2022)</span>
+        <span class="pill">Deep Double Descent (Nakkiran)</span>
+        <span class="pill">Neural Tangent Kernel</span>
+        <span class="pill">Proximal Policy Optimization</span>
+        <span class="pill">SAC (Haarnoja 2018)</span>
+        <span class="pill">LoRA (2021)</span>
+        <span class="pill">QLoRA (2023)</span>
+        <span class="pill">PEFT Survey</span>
+        <span class="pill">AlphaCode (2022)</span>
+        <span class="pill">Codex (2021)</span>
+      </div>
+    </div>
 
-<div class="full-card" style="border:1px solid var(--border); margin-top:1.5px;">
-  <div class="full-card-title">Programming & Tools Stack <span>// what to master</span></div>
-  <div class="pills">
-    <span class="pill highlight">Python (fluent)</span>
-    <span class="pill highlight">PyTorch (deep internals)</span>
-    <span class="pill highlight">JAX / Flax</span>
-    <span class="pill highlight">CUDA C++</span>
-    <span class="pill highlight">Triton (kernel writing)</span>
-    <span class="pill">NumPy, SciPy</span>
-    <span class="pill">Scikit-learn</span>
-    <span class="pill">HuggingFace Transformers</span>
-    <span class="pill">Datasets library</span>
-    <span class="pill">DeepSpeed</span>
-    <span class="pill">Megatron-LM</span>
-    <span class="pill">WandB</span>
-    <span class="pill">Linux / Bash</span>
-    <span class="pill">Git / GitHub</span>
-    <span class="pill">Docker / Kubernetes</span>
-    <span class="pill">SLURM</span>
-    <span class="pill">Jupyter</span>
-    <span class="pill">TensorBoard</span>
-    <span class="pill">vLLM / TGI</span>
-    <span class="pill">LitGPT</span>
-    <span class="pill">Nemo Framework</span>
-  </div>
-</div>
-```
-
+    <div class="full-card" style="border:1px solid var(--border); margin-top:1.5px;">
+      <div class="full-card-title">Programming &amp; Tools Stack <span>// what to master</span></div>
+      <div class="pills">
+        <span class="pill highlight">Python (fluent)</span>
+        <span class="pill highlight">PyTorch (deep internals)</span>
+        <span class="pill highlight">JAX / Flax</span>
+        <span class="pill highlight">CUDA C++</span>
+        <span class="pill highlight">Triton (kernel writing)</span>
+        <span class="pill">NumPy, SciPy</span>
+        <span class="pill">Scikit-learn</span>
+        <span class="pill">HuggingFace Transformers</span>
+        <span class="pill">Datasets library</span>
+        <span class="pill">DeepSpeed</span>
+        <span class="pill">Megatron-LM</span>
+        <span class="pill">WandB</span>
+        <span class="pill">Linux / Bash</span>
+        <span class="pill">Git / GitHub</span>
+        <span class="pill">Docker / Kubernetes</span>
+        <span class="pill">SLURM</span>
+        <span class="pill">Jupyter</span>
+        <span class="pill">TensorBoard</span>
+        <span class="pill">vLLM / TGI</span>
+        <span class="pill">LitGPT</span>
+        <span class="pill">Nemo Framework</span>
+      </div>
+    </div>
   </div>
 
 </main>
@@ -2062,18 +1938,14 @@ line-height: 1.9;
 </footer>
 
 <script>
-  // Intersection observer for reveal animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   }, { threshold: 0.05 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Active nav highlight
   const sections = document.querySelectorAll('.phase, #timeline, #hiring');
   const navItems = document.querySelectorAll('.nav-item');
 
